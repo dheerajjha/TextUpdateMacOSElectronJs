@@ -2,10 +2,12 @@
 const settingsBtn = document.getElementById('settingsBtn');
 const helpBtn = document.getElementById('helpBtn');
 const statsBtn = document.getElementById('statsBtn');
+const historyBtn = document.getElementById('historyBtn');
 const themeToggle = document.getElementById('themeToggle');
 const settingsModal = document.getElementById('settingsModal');
 const helpModal = document.getElementById('helpModal');
 const statsModal = document.getElementById('statsModal');
+const historyModal = document.getElementById('historyModal');
 const previewModal = document.getElementById('previewModal');
 const closeButtons = document.querySelectorAll('.close');
 const settingsForm = document.getElementById('settingsForm');
@@ -40,6 +42,11 @@ const modifiedText = document.getElementById('modifiedText');
 const acceptChanges = document.getElementById('acceptChanges');
 const rejectChanges = document.getElementById('rejectChanges');
 
+// History elements
+const historyList = document.getElementById('historyList');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const exportHistoryBtn = document.getElementById('exportHistoryBtn');
+
 // State management
 let currentTheme = localStorage.getItem('theme') || 'light';
 let stats = JSON.parse(localStorage.getItem('textUpdateStats')) || {
@@ -71,6 +78,11 @@ statsBtn.addEventListener('click', () => {
   statsModal.style.display = 'block';
 });
 
+historyBtn.addEventListener('click', async () => {
+  await updateHistoryDisplay();
+  historyModal.style.display = 'block';
+});
+
 // Theme toggle
 themeToggle.addEventListener('click', () => {
   currentTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -90,6 +102,7 @@ closeButtons.forEach(button => {
     settingsModal.style.display = 'none';
     helpModal.style.display = 'none';
     statsModal.style.display = 'none';
+    historyModal.style.display = 'none';
     previewModal.style.display = 'none';
   });
 });
@@ -104,6 +117,9 @@ window.addEventListener('click', (event) => {
   }
   if (event.target === statsModal) {
     statsModal.style.display = 'none';
+  }
+  if (event.target === historyModal) {
+    historyModal.style.display = 'none';
   }
   if (event.target === previewModal) {
     previewModal.style.display = 'none';
@@ -126,15 +142,19 @@ apiTypeRadios.forEach(radio => {
 // Save settings
 settingsForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  
+
   try {
     const apiType = document.querySelector('input[name="apiType"]:checked').value;
     const settings = {
       useAzure: apiType === 'azure',
       showNotifications: document.getElementById('showNotifications').checked,
-      startMinimized: document.getElementById('startMinimized').checked
+      startMinimized: document.getElementById('startMinimized').checked,
+      'shortcuts.grammar': document.getElementById('grammarShortcut').value,
+      'shortcuts.rephrase': document.getElementById('rephraseShortcut').value,
+      'shortcuts.summarize': document.getElementById('summarizeShortcut').value,
+      'shortcuts.translate': document.getElementById('translateShortcut').value
     };
-    
+
     if (apiType === 'azure') {
       settings.azureEndpoint = document.getElementById('azureEndpoint').value;
       settings.azureDeployment = document.getElementById('azureDeployment').value;
@@ -142,10 +162,10 @@ settingsForm.addEventListener('submit', async (event) => {
     } else {
       settings.openaiApiKey = document.getElementById('openaiApiKey').value;
     }
-    
+
     await window.api.saveSettings(settings);
     settingsModal.style.display = 'none';
-    showStatusMessage('Settings saved successfully', 'success');
+    showStatusMessage('Settings saved successfully. Restart the app to apply new shortcuts.', 'success');
   } catch (error) {
     console.error('Error saving settings:', error);
     showStatusMessage('Error saving settings', 'error');
@@ -194,6 +214,14 @@ async function loadSettings() {
     // Set app settings
     document.getElementById('showNotifications').checked = settings.showNotifications !== false;
     document.getElementById('startMinimized').checked = settings.startMinimized === true;
+
+    // Set shortcuts
+    if (settings.shortcuts) {
+      document.getElementById('grammarShortcut').value = settings.shortcuts.grammar || 'CommandOrControl+Shift+G';
+      document.getElementById('rephraseShortcut').value = settings.shortcuts.rephrase || 'CommandOrControl+Shift+R';
+      document.getElementById('summarizeShortcut').value = settings.shortcuts.summarize || 'CommandOrControl+Shift+S';
+      document.getElementById('translateShortcut').value = settings.shortcuts.translate || 'CommandOrControl+Shift+T';
+    }
   } catch (error) {
     console.error('Error loading settings:', error);
     showStatusMessage('Error loading settings', 'error');
@@ -204,6 +232,22 @@ async function loadSettings() {
 window.api.onShowSettings(() => {
   loadSettings();
   settingsModal.style.display = 'block';
+});
+
+// Listen for preview events
+window.api.onShowPreview((data) => {
+  showTextPreview(data.original, data.modified, data.type, data.responseTime);
+  // Show the main window if it's hidden
+  window.focus();
+});
+
+// Listen for processing events
+window.api.onProcessingStart((type) => {
+  showProcessingIndicator(type);
+});
+
+window.api.onProcessingEnd(() => {
+  hideProcessingIndicator();
 });
 
 // Stats management
@@ -237,15 +281,20 @@ exportStatsBtn.addEventListener('click', () => {
 });
 
 // Preview modal handlers
-acceptChanges.addEventListener('click', () => {
+acceptChanges.addEventListener('click', async () => {
   if (pendingTextChange) {
-    window.api.applyTextChange?.(pendingTextChange.modifiedText);
-    addToRecentActivity(pendingTextChange.type, pendingTextChange.originalText.length);
-    updateStats(pendingTextChange.type, pendingTextChange.originalText.length, pendingTextChange.responseTime);
+    try {
+      await window.api.applyTextChange(pendingTextChange.modifiedText);
+      addToRecentActivity(pendingTextChange.type, pendingTextChange.originalText.length);
+      updateStats(pendingTextChange.type, pendingTextChange.originalText.length, pendingTextChange.responseTime);
+      showStatusMessage('Changes applied successfully', 'success');
+    } catch (error) {
+      console.error('Error applying changes:', error);
+      showStatusMessage('Failed to apply changes', 'error');
+    }
     pendingTextChange = null;
   }
   previewModal.style.display = 'none';
-  showStatusMessage('Changes applied', 'success');
 });
 
 rejectChanges.addEventListener('click', () => {
@@ -402,6 +451,86 @@ function showTextPreview(original, modified, type, responseTime) {
   modifiedText.textContent = modified;
   pendingTextChange = { originalText: original, modifiedText: modified, type, responseTime };
   previewModal.style.display = 'block';
+}
+
+// History management
+clearHistoryBtn.addEventListener('click', async () => {
+  if (confirm('Are you sure you want to clear all history?')) {
+    try {
+      await window.api.clearHistory();
+      await updateHistoryDisplay();
+      showStatusMessage('History cleared', 'success');
+    } catch (error) {
+      console.error('Error clearing history:', error);
+      showStatusMessage('Error clearing history', 'error');
+    }
+  }
+});
+
+exportHistoryBtn.addEventListener('click', async () => {
+  try {
+    const history = await window.api.getHistory();
+    const dataStr = JSON.stringify(history, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `text-update-history-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    showStatusMessage('History exported', 'success');
+  } catch (error) {
+    console.error('Error exporting history:', error);
+    showStatusMessage('Error exporting history', 'error');
+  }
+});
+
+async function updateHistoryDisplay() {
+  try {
+    const history = await window.api.getHistory();
+
+    if (!history || history.length === 0) {
+      historyList.innerHTML = '<p class="no-history">No history available</p>';
+      return;
+    }
+
+    const historyHTML = history.map(entry => {
+      const date = new Date(entry.timestamp);
+      const dateStr = date.toLocaleDateString();
+      const timeStr = date.toLocaleTimeString();
+      const typeLabel = entry.type.charAt(0).toUpperCase() + entry.type.slice(1);
+
+      return `
+        <div class="history-item">
+          <div class="history-header">
+            <strong>${typeLabel}</strong>
+            <span class="history-date">${dateStr} ${timeStr}</span>
+          </div>
+          <div class="history-content">
+            <div class="history-section">
+              <label>Original:</label>
+              <p class="history-text">${escapeHtml(entry.original.substring(0, 200))}${entry.original.length > 200 ? '...' : ''}</p>
+            </div>
+            <div class="history-section">
+              <label>Modified:</label>
+              <p class="history-text">${escapeHtml(entry.modified.substring(0, 200))}${entry.modified.length > 200 ? '...' : ''}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    historyList.innerHTML = historyHTML;
+  } catch (error) {
+    console.error('Error updating history display:', error);
+    historyList.innerHTML = '<p class="no-history">Error loading history</p>';
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // Load settings on startup

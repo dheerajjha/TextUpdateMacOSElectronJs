@@ -292,6 +292,13 @@ footer {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.settings-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: -5px 0 15px 0;
+  font-style: italic;
+}
+
 .modal-content {
   background-color: var(--container-bg);
   margin: 5% auto;
@@ -534,6 +541,97 @@ footer {
   .preview-actions {
     flex-direction: column;
   }
+}
+
+/* History Modal Styles */
+.history-list {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.no-history {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.history-item {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: all 0.2s ease;
+}
+
+.history-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.history-header strong {
+  color: var(--primary-color);
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.history-date {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.history-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.history-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-section label {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-text {
+  background-color: var(--container-bg);
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-color);
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.history-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.history-actions button {
+  flex: 1;
 }
 
 /* Accessibility */

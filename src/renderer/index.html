@@ -20,6 +20,7 @@
         <button id="themeToggle" class="icon-btn" title="Toggle Theme">
           <span class="theme-icon">🌙</span>
         </button>
+        <button id="historyBtn">History</button>
         <button id="statsBtn">Stats</button>
         <button id="settingsBtn">Settings</button>
         <button id="helpBtn">Help</button>
@@ -144,7 +145,26 @@
             Start Minimized
           </label>
         </div>
-        
+
+        <h3>Keyboard Shortcuts</h3>
+        <p class="settings-hint">Use format: CommandOrControl+Shift+G (or Ctrl+Shift+G on Windows/Linux)</p>
+        <div class="form-group">
+          <label for="grammarShortcut">Grammar Check:</label>
+          <input type="text" id="grammarShortcut" placeholder="CommandOrControl+Shift+G">
+        </div>
+        <div class="form-group">
+          <label for="rephraseShortcut">Rephrase:</label>
+          <input type="text" id="rephraseShortcut" placeholder="CommandOrControl+Shift+R">
+        </div>
+        <div class="form-group">
+          <label for="summarizeShortcut">Summarize:</label>
+          <input type="text" id="summarizeShortcut" placeholder="CommandOrControl+Shift+S">
+        </div>
+        <div class="form-group">
+          <label for="translateShortcut">Translate:</label>
+          <input type="text" id="translateShortcut" placeholder="CommandOrControl+Shift+T">
+        </div>
+
         <div class="form-actions">
           <button type="submit">Save Settings</button>
           <button type="button" id="resetBtn">Reset to Defaults</button>
@@ -221,10 +241,10 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Help</h2>
-      
+
       <h3>About</h3>
       <p>Text Update App helps you improve your text by checking grammar and rephrasing using AI.</p>
-      
+
       <h3>Features</h3>
       <ul>
         <li>Grammar checking with AI</li>
@@ -236,7 +256,7 @@
         <li>Dark/Light theme support</li>
         <li>Works with any application</li>
       </ul>
-      
+
       <h3>Keyboard Shortcuts</h3>
       <ul>
         <li><strong>⌘⇧G</strong> - Grammar Check</li>
@@ -244,7 +264,7 @@
         <li><strong>⌘⇧S</strong> - Summarize Text</li>
         <li><strong>⌘⇧T</strong> - Translate Text</li>
       </ul>
-      
+
       <h3>Troubleshooting</h3>
       <p>If you encounter issues:</p>
       <ul>
@@ -253,6 +273,23 @@
         <li>Check the connection status indicator</li>
         <li>Restart the application</li>
       </ul>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Text Change History</h2>
+
+      <div class="history-list" id="historyList">
+        <p class="no-history">No history available</p>
+      </div>
+
+      <div class="history-actions">
+        <button id="clearHistoryBtn">Clear History</button>
+        <button id="exportHistoryBtn">Export History</button>
+      </div>
     </div>
   </div>
 

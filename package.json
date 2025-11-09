@@ -45,10 +45,16 @@
     "linux": {
       "target": ["AppImage", "deb"],
       "category": "Utility"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "your-github-username",
+      "repo": "text-update-app"
     }
   },
   "dependencies": {
     "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.0",
     "openai": "^4.0.0"
   },
   "devDependencies": {

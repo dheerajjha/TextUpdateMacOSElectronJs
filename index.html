@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Text Update App</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Text Update App</h1>
+      <div class="nav-buttons">
+        <button id="settings-button" class="btn">Settings</button>
+        <button id="help-button" class="btn">Help</button>
+        <button id="test-button" class="btn">Test Permissions</button>
+      </div>
+    </header>
+    
+    <main>
+      <div class="status-panel">
+        <h2>Status</h2>
+        <p id="status-message">Ready</p>
+        <p id="last-action">No actions performed yet</p>
+      </div>
+      
+      <div class="shortcuts-panel">
+        <h2>Keyboard Shortcuts</h2>
+        <ul>
+          <li><strong>Grammar Check:</strong> <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd></li>
+          <li><strong>Rephrase Text:</strong> <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd></li>
+        </ul>
+      </div>
+      
+      <div class="usage-instructions">
+        <h2>How to Use</h2>
+        <ol>
+          <li>Select text in any application</li>
+          <li>Use the keyboard shortcuts to check grammar or rephrase</li>
+          <li>The app will process the text and replace the selection</li>
+        </ol>
+      </div>
+    </main>
+    
+    <footer>
+      <p>&copy; 2025 Text Update App</p>
+    </footer>
+  </div>
+  
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Settings</h2>
+      <form id="settings-form">
+        <div class="form-group">
+          <label for="use-azure">Use Azure OpenAI</label>
+          <input type="checkbox" id="use-azure" name="useAzure">
+        </div>
+        
+        <div class="form-group azure-settings">
+          <label for="azure-endpoint">Azure OpenAI Endpoint</label>
+          <input type="text" id="azure-endpoint" name="azureEndpoint" placeholder="https://your-resource.openai.azure.com">
+        </div>
+        
+        <div class="form-group azure-settings">
+          <label for="azure-api-key">Azure OpenAI API Key</label>
+          <input type="password" id="azure-api-key" name="azureApiKey">
+        </div>
+        
+        <div class="form-group azure-settings">
+          <label for="azure-deployment">Azure OpenAI Deployment Name</label>
+          <input type="text" id="azure-deployment" name="azureDeployment" placeholder="gpt-35-turbo">
+        </div>
+        
+        <div class="form-group openai-settings">
+          <label for="openai-api-key">OpenAI API Key</label>
+          <input type="password" id="openai-api-key" name="openaiApiKey">
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn">Save Settings</button>
+          <button type="button" id="reset-settings" class="btn btn-secondary">Reset to Defaults</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Help Modal -->
+  <div id="help-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Help</h2>
+      <div class="help-content">
+        <h3>About Text Update App</h3>
+        <p>Text Update App is a desktop application that helps you improve your writing by checking grammar and rephrasing text using AI.</p>
+        
+        <h3>Features</h3>
+        <ul>
+          <li><strong>Grammar Check:</strong> Identifies and corrects grammar errors in your text.</li>
+          <li><strong>Text Rephrasing:</strong> Rewrites your text to improve clarity and style.</li>
+        </ul>
+        
+        <h3>How to Use</h3>
+        <ol>
+          <li>Select text in any application (browser, word processor, etc.)</li>
+          <li>Use the keyboard shortcuts to check grammar or rephrase</li>
+          <li>The app will process the text and replace your selection</li>
+        </ol>
+        
+        <h3>Troubleshooting</h3>
+        <ul>
+          <li><strong>Shortcuts not working:</strong> Make sure no other application is using the same shortcuts.</li>
+          <li><strong>Text not being replaced:</strong> Some applications may restrict clipboard access. Try using the app with different applications.</li>
+          <li><strong>API errors:</strong> Check your API keys and internet connection in the Settings.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <script src="renderer.js"></script>
+</body>
+</html> 

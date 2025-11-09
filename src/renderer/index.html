@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <title>Text Update App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <h1>Text Update App</h1>
+        <div class="status-indicator">
+          <span id="connectionStatus" class="status-dot connected"></span>
+          <span id="connectionText">Connected</span>
+        </div>
+      </div>
+      <nav>
+        <button id="themeToggle" class="icon-btn" title="Toggle Theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <button id="statsBtn">Stats</button>
+        <button id="settingsBtn">Settings</button>
+        <button id="helpBtn">Help</button>
+      </nav>
+    </header>
+
+    <main>
+      <div class="status-panel">
+        <h2>Status</h2>
+        <p id="statusMessage">Ready - Use global shortcuts to check grammar or rephrase text</p>
+        <div class="activity-indicator">
+          <div id="processingIndicator" class="processing-spinner hidden">
+            <div class="spinner"></div>
+            <span id="processingText">Processing...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions-panel">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+          <button id="grammarBtn" class="action-btn">
+            <span class="btn-icon">✓</span>
+            <span class="btn-text">Grammar Check</span>
+            <span class="btn-shortcut">⌘⇧G</span>
+          </button>
+          <button id="rephraseBtn" class="action-btn">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Rephrase</span>
+            <span class="btn-shortcut">⌘⇧R</span>
+          </button>
+          <button id="summarizeBtn" class="action-btn">
+            <span class="btn-icon">📝</span>
+            <span class="btn-text">Summarize</span>
+            <span class="btn-shortcut">⌘⇧S</span>
+          </button>
+          <button id="translateBtn" class="action-btn">
+            <span class="btn-icon">🌐</span>
+            <span class="btn-text">Translate</span>
+            <span class="btn-shortcut">⌘⇧T</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="shortcuts-panel">
+        <h2>Keyboard Shortcuts</h2>
+        <ul>
+          <li><strong>Command+Shift+G</strong> - Check Grammar</li>
+          <li><strong>Command+Shift+R</strong> - Rephrase Text</li>
+        </ul>
+      </div>
+
+      <div class="usage-instructions">
+        <h2>How to Use</h2>
+        <ol>
+          <li>Select text in any application</li>
+          <li>Press the shortcut for the operation you want</li>
+          <li>The selected text will be automatically replaced</li>
+        </ol>
+      </div>
+    </main>
+
+    <footer>
+      <p>Text Update App - Power of AI in your clipboard</p>
+    </footer>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Settings</h2>
+      
+      <form id="settingsForm">
+        <h3>API Configuration</h3>
+        <div class="form-group">
+          <label>
+            <input type="radio" name="apiType" value="azure" checked>
+            Azure OpenAI
+          </label>
+        </div>
+        
+        <div id="azureSettings">
+          <div class="form-group">
+            <label for="azureEndpoint">Azure Endpoint:</label>
+            <input type="text" id="azureEndpoint" placeholder="your-resource.openai.azure.com">
+          </div>
+          <div class="form-group">
+            <label for="azureDeployment">Deployment ID:</label>
+            <input type="text" id="azureDeployment" placeholder="gpt-4o">
+          </div>
+          <div class="form-group">
+            <label for="azureApiKey">API Key:</label>
+            <input type="password" id="azureApiKey">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            <input type="radio" name="apiType" value="openai">
+            OpenAI
+          </label>
+        </div>
+        
+        <div id="openaiSettings" style="display:none;">
+          <div class="form-group">
+            <label for="openaiApiKey">API Key:</label>
+            <input type="password" id="openaiApiKey">
+          </div>
+        </div>
+        
+        <h3>Application Settings</h3>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="showNotifications" checked>
+            Show Notifications
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="startMinimized">
+            Start Minimized
+          </label>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit">Save Settings</button>
+          <button type="button" id="resetBtn">Reset to Defaults</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Stats Modal -->
+  <div id="statsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Usage Statistics</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Grammar Checks</h3>
+          <div class="stat-number" id="grammarCount">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Rephrases</h3>
+          <div class="stat-number" id="rephraseCount">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Words Processed</h3>
+          <div class="stat-number" id="wordsCount">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Average Response Time</h3>
+          <div class="stat-number" id="avgResponseTime">0ms</div>
+        </div>
+      </div>
+      
+      <div class="recent-activity">
+        <h3>Recent Activity</h3>
+        <div id="recentActivityList" class="activity-list">
+          <p class="no-activity">No recent activity</p>
+        </div>
+      </div>
+      
+      <div class="stats-actions">
+        <button id="clearStatsBtn">Clear Statistics</button>
+        <button id="exportStatsBtn">Export Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text Preview Modal -->
+  <div id="previewModal" class="modal">
+    <div class="modal-content preview-content">
+      <span class="close">&times;</span>
+      <h2>Text Comparison</h2>
+      
+      <div class="text-comparison">
+        <div class="text-section">
+          <h3>Original</h3>
+          <div id="originalText" class="text-display"></div>
+        </div>
+        <div class="text-section">
+          <h3>Modified</h3>
+          <div id="modifiedText" class="text-display"></div>
+        </div>
+      </div>
+      
+      <div class="preview-actions">
+        <button id="acceptChanges">Accept Changes</button>
+        <button id="rejectChanges">Reject Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Help</h2>
+      
+      <h3>About</h3>
+      <p>Text Update App helps you improve your text by checking grammar and rephrasing using AI.</p>
+      
+      <h3>Features</h3>
+      <ul>
+        <li>Grammar checking with AI</li>
+        <li>Text rephrasing for clarity</li>
+        <li>Text summarization</li>
+        <li>Text translation</li>
+        <li>Global keyboard shortcuts</li>
+        <li>Usage statistics tracking</li>
+        <li>Dark/Light theme support</li>
+        <li>Works with any application</li>
+      </ul>
+      
+      <h3>Keyboard Shortcuts</h3>
+      <ul>
+        <li><strong>⌘⇧G</strong> - Grammar Check</li>
+        <li><strong>⌘⇧R</strong> - Rephrase Text</li>
+        <li><strong>⌘⇧S</strong> - Summarize Text</li>
+        <li><strong>⌘⇧T</strong> - Translate Text</li>
+      </ul>
+      
+      <h3>Troubleshooting</h3>
+      <p>If you encounter issues:</p>
+      <ul>
+        <li>Ensure you have an active internet connection</li>
+        <li>Verify your API key is correctly configured</li>
+        <li>Check the connection status indicator</li>
+        <li>Restart the application</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html> 

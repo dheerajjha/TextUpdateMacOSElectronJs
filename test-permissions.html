@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permissions Test - Text Update App</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .test-button {
+            margin: 0.5rem 0;
+        }
+        .test-result {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Permissions Test</h1>
+            <div class="nav-buttons">
+                <button id="back-button" class="btn">Back to App</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="test-section">
+                <h2>Clipboard Permissions</h2>
+                <p>Test clipboard read and write operations</p>
+                <button id="test-clipboard-read" class="btn test-button">Test Clipboard Read</button>
+                <button id="test-clipboard-write" class="btn test-button">Test Clipboard Write</button>
+                <div id="clipboard-result" class="test-result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>Notification Permissions</h2>
+                <p>Test notification creation and display</p>
+                <button id="test-notification" class="btn test-button">Test Notification</button>
+                <div id="notification-result" class="test-result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>System Information</h2>
+                <div id="system-info" class="test-result"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Text Update App - Debug Mode</p>
+        </footer>
+    </div>
+
+    <script src="test-permissions.js"></script>
+</body>
+</html> 

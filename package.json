@@ -48,8 +48,8 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "your-github-username",
-      "repo": "text-update-app"
+      "owner": "dheerajjha",
+      "repo": "TextUpdateMacOSElectronJs"
     }
   },
   "dependencies": {

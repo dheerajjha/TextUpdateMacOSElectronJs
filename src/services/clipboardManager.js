@@ -36,39 +36,37 @@ class ClipboardManager {
       // Save original clipboard
       const originalClipboard = clipboard.readText();
 
-      // Clear clipboard so we can detect if copy worked
-      clipboard.writeText('');
+      // Use a unique marker to detect if copy worked
+      const marker = `__CLIPBOARD_MARKER_${Date.now()}__`;
+      clipboard.writeText(marker);
 
-      // Wait a bit for clipboard to clear
-      await new Promise(resolve => setTimeout(resolve, 50));
+      // Wait for clipboard to be set
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Copy selected text using AppleScript
-      const script = `
-        tell application "System Events"
-          keystroke "c" using command down
-        end tell
-      `;
-
+      const script = `tell application "System Events" to keystroke "c" using command down`;
       await execAsync(`osascript -e '${script}'`);
 
-      // Wait for clipboard to update (increased time)
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Wait for clipboard to update - give it more time
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Get the copied text
       const selectedText = clipboard.readText();
 
-      console.log('Selected text captured:', selectedText.substring(0, 50) + '...');
-
-      // Restore original clipboard (but only after a delay)
-      setTimeout(() => {
+      // Check if clipboard changed from our marker
+      if (!selectedText || selectedText === marker || selectedText === '') {
+        console.log('⚠️ No text was copied - clipboard unchanged');
+        // Restore immediately if nothing was selected
         clipboard.writeText(originalClipboard);
-      }, 500);
-
-      // Return empty string if nothing was copied
-      if (!selectedText || selectedText === '') {
-        console.log('No text was copied to clipboard');
         return '';
       }
+
+      console.log('✓ Captured:', selectedText.length, 'chars');
+
+      // Restore original clipboard after a delay
+      setTimeout(() => {
+        clipboard.writeText(originalClipboard);
+      }, 1000);
 
       return selectedText;
     } catch (error) {
@@ -82,9 +80,10 @@ class ClipboardManager {
       // Save original clipboard
       const originalClipboard = clipboard.readText();
 
-      // Clear and copy
-      clipboard.writeText('');
-      await new Promise(resolve => setTimeout(resolve, 50));
+      // Use a unique marker to detect if copy worked
+      const marker = `__CLIPBOARD_MARKER_${Date.now()}__`;
+      clipboard.writeText(marker);
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       const script = `
         Add-Type -AssemblyName System.Windows.Forms
@@ -93,20 +92,23 @@ class ClipboardManager {
 
       await execAsync('powershell -command "' + script + '"');
 
-      // Wait for clipboard
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Wait for clipboard to update
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const selectedText = clipboard.readText();
 
-      // Restore clipboard
-      setTimeout(() => {
+      // Check if clipboard changed from our marker
+      if (!selectedText || selectedText === marker || selectedText === '') {
+        console.log('⚠️ No text was copied - clipboard unchanged');
         clipboard.writeText(originalClipboard);
-      }, 500);
-
-      if (!selectedText || selectedText === '') {
-        console.log('No text was copied to clipboard');
         return '';
       }
+
+      console.log('✓ Captured:', selectedText.length, 'chars');
+
+      setTimeout(() => {
+        clipboard.writeText(originalClipboard);
+      }, 1000);
 
       return selectedText;
     } catch (error) {

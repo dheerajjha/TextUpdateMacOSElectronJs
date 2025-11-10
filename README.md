@@ -28,12 +28,24 @@ Text Update App is a powerful desktop application that provides instant AI-power
 ### Installation
 
 #### macOS
+
+> **Note**: The app is currently unsigned. You'll need to bypass Gatekeeper (see below).
+
 ```bash
-# Download and install
+# Download
 curl -LO https://github.com/dheerajjha/TextUpdateMacOSElectronJs/releases/latest/download/Text-Update.dmg
+
+# Remove quarantine attribute (IMPORTANT)
+xattr -cr Text-Update.dmg
+
+# Open and drag to Applications
 open Text-Update.dmg
-# Drag to Applications folder
 ```
+
+**Alternative method:**
+1. Download the DMG from releases
+2. Right-click on "Text Update.app" → Select "Open"
+3. Click "Open" in the security dialog
 
 #### Windows
 ```bash

@@ -9,61 +9,68 @@ class ClipboardManager {
   }
 
   async getSelectedText() {
-    console.log('Getting selected text for platform:', this.platform);
-    
-    switch (this.platform) {
-      case 'darwin':
-        return this.getSelectedTextMacOS();
-      case 'win32':
-        return this.getSelectedTextWindows();
-      default:
-        return this.getSelectedTextLinux();
+    console.log('🔍 Getting selected text for platform:', this.platform);
+
+    const text = await (async () => {
+      switch (this.platform) {
+        case 'darwin':
+          return this.getSelectedTextMacOS();
+        case 'win32':
+          return this.getSelectedTextWindows();
+        default:
+          return this.getSelectedTextLinux();
+      }
+    })();
+
+    if (text && text.trim()) {
+      console.log('✓ Captured', text.length, 'characters');
+    } else {
+      console.log('⚠️ No text captured - make sure text is selected!');
     }
+
+    return text;
   }
 
   async getSelectedTextMacOS() {
     try {
+      // Save original clipboard
       const originalClipboard = clipboard.readText();
-      console.log('Original clipboard length:', originalClipboard.length);
 
+      // Clear clipboard so we can detect if copy worked
+      clipboard.writeText('');
+
+      // Wait a bit for clipboard to clear
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Copy selected text using AppleScript
       const script = `
-        tell application "System Events"
-          set activeApp to name of first application process whose frontmost is true
-          log "Active app: " & activeApp
-        end tell
-
-        -- Store original clipboard
-        set originalContent to (the clipboard as text)
-        
-        -- Clear clipboard
-        set the clipboard to ""
-        delay 0.1
-        
-        -- Copy selected text
         tell application "System Events"
           keystroke "c" using command down
         end tell
-        
-        -- Wait for clipboard
-        delay 0.2
-        
-        -- Get selected text
-        set selectedText to (the clipboard as text)
-        
-        -- Restore clipboard
-        set the clipboard to originalContent
-        
-        -- Return selected text
-        return selectedText`;
+      `;
 
-      const { stdout, stderr } = await execAsync(`osascript -e '${script}'`);
-      if (stderr) console.error('AppleScript error:', stderr);
+      await execAsync(`osascript -e '${script}'`);
 
-      // Ensure original clipboard is restored
-      await new Promise(resolve => setTimeout(resolve, 100));
-      clipboard.writeText(originalClipboard);
+      // Wait for clipboard to update (increased time)
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      return stdout.trim();
+      // Get the copied text
+      const selectedText = clipboard.readText();
+
+      console.log('Selected text captured:', selectedText.substring(0, 50) + '...');
+
+      // Restore original clipboard (but only after a delay)
+      setTimeout(() => {
+        clipboard.writeText(originalClipboard);
+      }, 500);
+
+      // Return empty string if nothing was copied
+      if (!selectedText || selectedText === '') {
+        console.log('No text was copied to clipboard');
+        return '';
+      }
+
+      return selectedText;
     } catch (error) {
       console.error('Error getting selected text:', error);
       return '';
@@ -72,17 +79,36 @@ class ClipboardManager {
 
   async getSelectedTextWindows() {
     try {
+      // Save original clipboard
+      const originalClipboard = clipboard.readText();
+
+      // Clear and copy
+      clipboard.writeText('');
+      await new Promise(resolve => setTimeout(resolve, 50));
+
       const script = `
         Add-Type -AssemblyName System.Windows.Forms
-        $originalClipboard = Get-Clipboard
         [System.Windows.Forms.SendKeys]::SendWait("^c")
-        Start-Sleep -Milliseconds 100
-        $selectedText = Get-Clipboard
-        Set-Clipboard -Value $originalClipboard
-        return $selectedText
       `;
-      const { stdout } = await execAsync('powershell -command &{' + script + '}');
-      return stdout.trim();
+
+      await execAsync('powershell -command "' + script + '"');
+
+      // Wait for clipboard
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const selectedText = clipboard.readText();
+
+      // Restore clipboard
+      setTimeout(() => {
+        clipboard.writeText(originalClipboard);
+      }, 500);
+
+      if (!selectedText || selectedText === '') {
+        console.log('No text was copied to clipboard');
+        return '';
+      }
+
+      return selectedText;
     } catch (error) {
       console.error('Error getting selected text:', error);
       return '';
@@ -116,29 +142,28 @@ class ClipboardManager {
     try {
       const originalClipboard = clipboard.readText();
 
-      const script = `
-        tell application "System Events"
-          set frontApp to first application process whose frontmost is true
-          
-          -- Store original clipboard
-          set originalContent to (the clipboard as text)
-          
-          -- Paste new text
-          keystroke "v" using command down
-          delay 0.2
-        end tell`;
-
-      // Set new text and wait
+      // Put new text in clipboard
       clipboard.writeText(newText);
+
+      // Wait for clipboard to be ready
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      // Execute paste
+      // Paste it
+      const script = `
+        tell application "System Events"
+          keystroke "v" using command down
+        end tell
+      `;
+
       await execAsync(`osascript -e '${script}'`);
 
-      // Restore clipboard
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Wait for paste to complete
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Restore original clipboard
       clipboard.writeText(originalClipboard);
 
+      console.log('✓ Text replaced successfully');
       return true;
     } catch (error) {
       console.error('Error replacing text:', error);

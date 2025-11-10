@@ -19,7 +19,10 @@
     "text",
     "productivity"
   ],
-  "author": "",
+  "author": {
+    "name": "Text Update Team",
+    "email": "support@textupdate.app"
+  },
   "license": "MIT",
   "build": {
     "appId": "com.electron.text-update-app",

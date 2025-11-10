@@ -1,531 +1,246 @@
-# Text Update Application - Electron.js Implementation Guide
+# Text Update App
+
+> AI-powered text enhancement tool that works system-wide across all your applications
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Electron](https://img.shields.io/badge/Electron-22.0-blue.svg)](https://www.electronjs.org/)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/dheerajjha/TextUpdateMacOSElectronJs)
 
 ## Overview
-This document outlines the implementation of a text update application using Electron.js. The application allows users to check grammar and rephrase text using keyboard shortcuts, similar to the macOS version.
 
-## Core Features
-1. Global keyboard shortcuts for text operations
-2. Text selection and replacement
-3. Grammar checking
-4. Text rephrasing
-5. OpenAI integration (with Azure OpenAI support)
+Text Update App is a powerful desktop application that provides instant AI-powered text improvements using global keyboard shortcuts. Select any text in any application, press a shortcut, and get grammar-checked, rephrased, summarized, or translated text instantly.
 
-## Technical Requirements
-- Node.js (v14 or higher)
-- Electron.js (v22 or higher)
-- OpenAI API key or Azure OpenAI credentials
-- Operating System: Windows, macOS, or Linux
+### Key Features
 
-## Azure OpenAI Configuration
-The application uses Azure OpenAI for text processing. Here are the default configuration values:
+- ✅ **Grammar Checking** - Automatically fix grammatical errors
+- 🔄 **Text Rephrasing** - Improve clarity and conciseness
+- 📝 **Summarization** - Condense long text into key points
+- 🌐 **Translation** - Translate between English and Spanish
+- 👀 **Preview Mode** - Review changes before applying
+- 📜 **History Tracking** - Complete history of all text changes
+- ⚡ **Global Shortcuts** - Works across all applications
+- 🎨 **Dark/Light Theme** - Customizable interface
+- 📊 **Statistics** - Track your usage and productivity
+- 🔧 **Customizable** - Configure shortcuts and settings
+
+## Quick Start
+
+### Installation
+
+#### macOS
+```bash
+# Download and install
+curl -LO https://github.com/dheerajjha/TextUpdateMacOSElectronJs/releases/latest/download/Text-Update.dmg
+open Text-Update.dmg
+# Drag to Applications folder
+```
+
+#### Windows
+```bash
+# Download installer
+curl -LO https://github.com/dheerajjha/TextUpdateMacOSElectronJs/releases/latest/download/Text-Update-Setup.exe
+# Run installer
+./Text-Update-Setup.exe
+```
+
+#### Linux (Debian/Ubuntu)
+```bash
+# Download and install DEB package
+curl -LO https://github.com/dheerajjha/TextUpdateMacOSElectronJs/releases/latest/download/text-update-app_amd64.deb
+sudo dpkg -i text-update-app_amd64.deb
+
+# Or use AppImage
+curl -LO https://github.com/dheerajjha/TextUpdateMacOSElectronJs/releases/latest/download/Text-Update.AppImage
+chmod +x Text-Update.AppImage
+./Text-Update.AppImage
+```
+
+### Initial Setup
+
+1. Launch the application
+2. Click the **Settings** button
+3. Choose your AI provider:
+   - **Azure OpenAI** (Recommended): Enter endpoint, API key, and deployment name
+   - **OpenAI**: Enter your OpenAI API key
+4. Click **Save Settings**
+5. You're ready to go!
+
+### Usage
+
+1. **Select text** in any application
+2. **Press keyboard shortcut**:
+   - `Cmd/Ctrl+Shift+G` - Grammar Check
+   - `Cmd/Ctrl+Shift+R` - Rephrase
+   - `Cmd/Ctrl+Shift+S` - Summarize
+   - `Cmd/Ctrl+Shift+T` - Translate
+3. **Review preview** of changes
+4. **Accept or Reject** the changes
+
+## Development
+
+### Prerequisites
+
+- Node.js 14+
+- npm or yarn
+- Git
+
+### Setup
+
+```bash
+# Clone repository
+git clone https://github.com/dheerajjha/TextUpdateMacOSElectronJs.git
+cd TextUpdateMacOSElectronJs
+
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Build for production
+npm run build
+```
+
+### Project Structure
 
 ```
-Azure OpenAI Endpoint: init.openai.azure.com
-Azure OpenAI API Key: 
-Azure OpenAI Deployment: gpt-4o
-Azure OpenAI API Version: 2025-01-01-preview
-```
-
-These values are used in the application by default, but can be changed through the settings UI.
-
-## Project Structure
-```
-text-update-app/
-├── package.json
-├── main.js
-├── preload.js
-├── renderer.js
-├── index.html
-├── styles.css
-├── services/
-│   ├── shortcutManager.js
-│   ├── textService.js
-│   └── openAIService.js
-└── config/
+src/
+├── main/           # Main process (Electron)
+│   ├── main.js     # Application entry point
+│   ├── preload.js  # Context bridge
+│   ├── trayManager.js
+│   └── autoUpdater.js
+├── renderer/       # Renderer process (UI)
+│   ├── index.html
+│   ├── renderer.js
+│   └── styles.css
+├── services/       # Business logic
+│   ├── clipboardManager.js
+│   └── openaiService.js
+└── config/         # Configuration
     └── config.js
 ```
 
-## Implementation Details
+### Building
 
-### 1. Package.json Setup
-```json
-{
-  "name": "text-update-app",
-  "version": "1.0.0",
-  "description": "Text Update Application with Grammar and Rephrasing Features",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "build": "electron-builder"
-  },
-  "dependencies": {
-    "electron": "^22.0.0",
-    "openai": "^4.0.0",
-    "electron-store": "^8.1.0"
-  },
-  "devDependencies": {
-    "electron-builder": "^24.0.0"
-  }
-}
+```bash
+# Build for current platform
+npm run build
+
+# Build for specific platform
+npm run build:mac     # macOS
+npm run build:win     # Windows
+npm run build:linux   # Linux
 ```
 
-### 2. Main Process (main.js)
-```javascript
-const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron');
-const path = require('path');
+## Documentation
 
-let mainWindow;
+- **[User Guide](USER_GUIDE.md)** - Complete user documentation
+- **[Build Guide](BUILD.md)** - Building and deployment instructions
+- **[Implementation Details](IMPLEMENTATION.md)** - Technical implementation guide
+- **[Build Verification](BUILD_VERIFICATION.md)** - Build configuration verification
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
-    }
-  });
+## Platform Support
 
-  mainWindow.loadFile('index.html');
-}
+| Platform | Version | Status |
+|----------|---------|--------|
+| macOS | 10.13+ | ✅ Supported |
+| Windows | 7+ | ✅ Supported |
+| Linux | Ubuntu 16.04+ | ✅ Supported |
 
-app.whenReady().then(() => {
-  createWindow();
-  setupGlobalShortcuts();
-});
+### Platform-Specific Notes
 
-function setupGlobalShortcuts() {
-  // Command+Shift+G for grammar check
-  globalShortcut.register('CommandOrControl+Shift+G', () => {
-    mainWindow.webContents.send('shortcut-triggered', 'grammar-check');
-  });
+**macOS:**
+- Requires Accessibility permissions for clipboard access
+- Right-click and select "Open" on first launch
 
-  // Command+Shift+R for rephrase
-  globalShortcut.register('CommandOrControl+Shift+R', () => {
-    mainWindow.webContents.send('shortcut-triggered', 'rephrase');
-  });
-}
+**Windows:**
+- May require running as Administrator on first launch
+- Windows Defender might flag the app (add exception)
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+**Linux:**
+- Requires `xclip` and `xdotool` packages
+- Install: `sudo apt-get install xclip xdotool`
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
+## API Providers
+
+### Azure OpenAI (Recommended)
+
+```
+Endpoint: your-resource.openai.azure.com
+API Key: Your Azure OpenAI API key
+Deployment: gpt-4o (or your deployment name)
+API Version: 2025-01-01-preview
 ```
 
-### 3. Preload Script (preload.js)
-```javascript
-const { contextBridge, ipcRenderer } = require('electron');
+### OpenAI
 
-contextBridge.exposeInMainWorld('electronAPI', {
-  onShortcutTriggered: (callback) => {
-    ipcRenderer.on('shortcut-triggered', (event, shortcut) => {
-      callback(shortcut);
-    });
-  },
-  getSelectedText: () => ipcRenderer.invoke('get-selected-text'),
-  replaceSelectedText: (text) => ipcRenderer.invoke('replace-selected-text', text),
-  checkGrammar: (text) => ipcRenderer.invoke('check-grammar', text),
-  rephraseText: (text) => ipcRenderer.invoke('rephrase-text', text),
-  getSettings: () => ipcRenderer.invoke('get-settings'),
-  saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings)
-});
+```
+API Key: Your OpenAI API key from platform.openai.com
 ```
 
-### 4. Text Service (services/textService.js)
-```javascript
-const { clipboard } = require('electron');
-const { OpenAI } = require('openai');
-const Store = require('electron-store');
+## Security & Privacy
 
-const store = new Store();
+- ✅ API keys stored encrypted locally
+- ✅ No data stored remotely by this app
+- ✅ Text sent to OpenAI/Azure for processing only
+- ✅ Complete history stored locally only
+- ✅ Context isolation and CSP enabled
 
-class TextService {
-  constructor() {
-    // Check if using Azure OpenAI or standard OpenAI
-    const useAzure = store.get('useAzure', true); // Default to Azure OpenAI
-    
-    if (useAzure) {
-      // Azure OpenAI configuration
-      this.openai = new OpenAI({
-        apiKey: store.get('azureApiKey', ''),
-        baseURL: `https://${store.get('azureEndpoint', 'init.openai.azure.com')}/openai/deployments/${store.get('azureDeployment', 'gpt-4o')}`,
-        apiVersion: store.get('azureApiVersion', '2025-01-01-preview'),
-        defaultQuery: { 'api-version': store.get('azureApiVersion', '2025-01-01-preview') },
-        defaultHeaders: { 
-          'api-key': store.get('azureApiKey', ''),
-          'origin': 'https://ai.azure.com',
-          'referer': 'https://ai.azure.com/',
-          'x-ms-useragent': 'AzureOpenAI.Studio/ai.azure.com'
-        },
-      });
-    } else {
-      // Standard OpenAI configuration
-      this.openai = new OpenAI({
-        apiKey: store.get('openaiApiKey'),
-      });
-    }
-  }
+**Storage Locations:**
+- macOS: `~/Library/Application Support/text-update-app/`
+- Windows: `%APPDATA%\text-update-app\`
+- Linux: `~/.config/text-update-app/`
 
-  async getSelectedText() {
-    // Implementation depends on OS
-    // For Windows: Use Windows API
-    // For macOS: Use AppleScript
-    // For Linux: Use xclip or similar
-    return clipboard.readText();
-  }
+## Contributing
 
-  async replaceSelectedText(text) {
-    // Implementation depends on OS
-    // Similar to getSelectedText but for pasting
-    clipboard.writeText(text);
-  }
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-  async checkGrammar(text) {
-    const response = await this.openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{
-        role: "user",
-        content: `Check and correct the grammar in the following text. Only return the corrected text without any explanations:\n\n${text}`
-      }]
-    });
-    return response.choices[0].message.content;
-  }
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-  async rephraseText(text) {
-    const response = await this.openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{
-        role: "user",
-        content: `Rephrase the following text to make it more clear and concise. Only return the rephrased text without any explanations:\n\n${text}`
-      }]
-    });
-    return response.choices[0].message.content;
-  }
-}
+## Troubleshooting
 
-module.exports = new TextService();
-```
+### Common Issues
 
-### 5. Renderer Process (renderer.js)
-```javascript
-document.addEventListener('DOMContentLoaded', () => {
-  window.electronAPI.onShortcutTriggered(async (shortcut) => {
-    const selectedText = await window.electronAPI.getSelectedText();
-    
-    if (!selectedText) return;
+**"No text selected"**
+- Ensure text is highlighted before pressing shortcut
+- Grant Accessibility permissions (macOS)
+- Install xclip/xdotool (Linux)
 
-    try {
-      let result;
-      if (shortcut === 'grammar-check') {
-        result = await window.electronAPI.checkGrammar(selectedText);
-      } else if (shortcut === 'rephrase') {
-        result = await window.electronAPI.rephraseText(selectedText);
-      }
+**API Errors**
+- Verify API key in Settings
+- Check internet connection
+- Verify deployment name matches your Azure deployment
 
-      if (result) {
-        await window.electronAPI.replaceSelectedText(result);
-      }
-    } catch (error) {
-      console.error('Error processing text:', error);
-    }
-  });
-});
-```
+**Shortcuts not working**
+- Check for conflicts with other applications
+- Restart the application
+- Try customizing shortcuts in Settings
 
-### 6. HTML Interface (index.html)
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Text Update App</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Text Update App</h1>
-    <div class="shortcuts">
-      <h2>Keyboard Shortcuts</h2>
-      <p>Command+Shift+G: Check Grammar</p>
-      <p>Command+Shift+R: Rephrase Text</p>
-    </div>
-    <div class="status">
-      <p>Status: Running</p>
-    </div>
-  </div>
-  <script src="renderer.js"></script>
-</body>
-</html>
-```
+For more troubleshooting help, see [USER_GUIDE.md](USER_GUIDE.md#troubleshooting).
 
-### 7. Styling (styles.css)
-```css
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f5f5f5;
-}
+## License
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-.shortcuts {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-}
+## Acknowledgments
 
-.status {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #e9ecef;
-  border-radius: 4px;
-}
-```
+- Built with [Electron](https://www.electronjs.org/)
+- Powered by [OpenAI](https://openai.com/) / [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+- Icon and design inspired by productivity tools
 
-## OS-Specific Implementation Notes
+## Support
 
-### Windows
-For Windows, you'll need to use the Windows API to handle text selection and replacement:
-```javascript
-const { exec } = require('child_process');
+- **Issues**: [GitHub Issues](https://github.com/dheerajjha/TextUpdateMacOSElectronJs/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/dheerajjha/TextUpdateMacOSElectronJs/discussions)
+- **Email**: support@textupdate.app
 
-// Using PowerShell to get selected text
-async function getSelectedTextWindows() {
-  return new Promise((resolve) => {
-    exec('powershell -command "Get-Clipboard"', (error, stdout) => {
-      resolve(stdout.trim());
-    });
-  });
-}
-```
+---
 
-### macOS
-For macOS, you can use AppleScript:
-```javascript
-const { exec } = require('child_process');
+**Made with ❤️ by the Text Update Team**
 
-async function getSelectedTextMacOS() {
-  return new Promise((resolve) => {
-    const script = 'tell application "System Events" to keystroke "c" using command down';
-    exec(`osascript -e '${script}'`, () => {
-      resolve(clipboard.readText());
-    });
-  });
-}
-```
-
-### Linux
-For Linux, you can use xclip:
-```javascript
-const { exec } = require('child_process');
-
-async function getSelectedTextLinux() {
-  return new Promise((resolve) => {
-    exec('xclip -o -selection clipboard', (error, stdout) => {
-      resolve(stdout.trim());
-    });
-  });
-}
-```
-
-## Security Considerations
-1. Store OpenAI API key securely using electron-store
-2. Implement proper error handling
-3. Validate user input
-4. Use contextIsolation and nodeIntegration: false
-5. Implement proper CSP headers
-
-## Building and Distribution
-1. Configure electron-builder in package.json
-2. Set up code signing for macOS and Windows
-3. Create installers for each platform
-4. Implement auto-updates
-
-## Additional Features to Consider
-1. Settings panel for API key configuration
-2. Custom shortcut configuration
-3. History of text changes
-4. Multiple language support
-5. Offline mode with local models
-
-## Testing
-1. Unit tests for text processing
-2. Integration tests for shortcuts
-3. E2E tests for the complete workflow
-4. Cross-platform testing
-
-## Deployment Checklist
-1. API key configuration
-2. Cross-platform testing
-3. Performance optimization
-4. Error handling
-5. User documentation
-6. Update mechanism
-7. Analytics (optional)
-8. Crash reporting
-
-## Azure OpenAI Integration
-
-### Configuration
-The application is configured to use Azure OpenAI by default with the following settings:
-
-1. Azure OpenAI Endpoint: `init.openai.azure.com`
-2. Azure OpenAI API Key: ``
-3. Azure OpenAI Deployment Name: `gpt-4o`
-4. Azure OpenAI API Version: `2025-01-01-preview`
-
-These values are stored in the application's configuration and can be changed through the settings UI.
-
-### Settings UI Implementation
-```javascript
-// settings.js
-const { ipcMain } = require('electron');
-const Store = require('electron-store');
-
-const store = new Store();
-
-function setupSettingsHandlers() {
-  // Get current settings
-  ipcMain.handle('get-settings', () => {
-    return {
-      useAzure: store.get('useAzure', true), // Default to Azure OpenAI
-      openaiApiKey: store.get('openaiApiKey', ''),
-      azureEndpoint: store.get('azureEndpoint', 'init.openai.azure.com'),
-      azureApiKey: store.get('azureApiKey', ''),
-      azureDeployment: store.get('azureDeployment', 'gpt-4o'),
-      azureApiVersion: store.get('azureApiVersion', '2025-01-01-preview'),
-    };
-  });
-
-  // Save settings
-  ipcMain.handle('save-settings', (event, settings) => {
-    store.set('useAzure', settings.useAzure);
-    store.set('openaiApiKey', settings.openaiApiKey);
-    store.set('azureEndpoint', settings.azureEndpoint);
-    store.set('azureApiKey', settings.azureApiKey);
-    store.set('azureDeployment', settings.azureDeployment);
-    store.set('azureApiVersion', settings.azureApiVersion);
-    return true;
-  });
-}
-
-module.exports = { setupSettingsHandlers };
-```
-
-### Settings UI HTML
-```html
-<!-- settings.html -->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Settings - Text Update App</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Settings</h1>
-    <div class="settings-form">
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="useAzure" checked> Use Azure OpenAI
-        </label>
-      </div>
-      
-      <div id="openaiSettings" style="display: none;">
-        <h3>OpenAI Settings</h3>
-        <div class="form-group">
-          <label for="openaiApiKey">OpenAI API Key:</label>
-          <input type="password" id="openaiApiKey" class="form-control">
-        </div>
-      </div>
-      
-      <div id="azureSettings">
-        <h3>Azure OpenAI Settings</h3>
-        <div class="form-group">
-          <label for="azureEndpoint">Azure Endpoint:</label>
-          <input type="text" id="azureEndpoint" class="form-control" placeholder="init.openai.azure.com" value="init.openai.azure.com">
-        </div>
-        <div class="form-group">
-          <label for="azureApiKey">Azure API Key:</label>
-          <input type="password" id="azureApiKey" class="form-control" value="">
-        </div>
-        <div class="form-group">
-          <label for="azureDeployment">Deployment Name:</label>
-          <input type="text" id="azureDeployment" class="form-control" placeholder="gpt-4o" value="gpt-4o">
-        </div>
-        <div class="form-group">
-          <label for="azureApiVersion">API Version:</label>
-          <input type="text" id="azureApiVersion" class="form-control" placeholder="2025-01-01-preview" value="2025-01-01-preview">
-        </div>
-      </div>
-      
-      <div class="form-actions">
-        <button id="saveSettings" class="btn btn-primary">Save Settings</button>
-      </div>
-    </div>
-  </div>
-  <script src="settings.js"></script>
-</body>
-</html>
-```
-
-### Settings UI JavaScript
-```javascript
-// settings.js (renderer)
-document.addEventListener('DOMContentLoaded', async () => {
-  // Load current settings
-  const settings = await window.electronAPI.getSettings();
-  
-  // Populate form
-  document.getElementById('useAzure').checked = settings.useAzure;
-  document.getElementById('openaiApiKey').value = settings.openaiApiKey;
-  document.getElementById('azureEndpoint').value = settings.azureEndpoint;
-  document.getElementById('azureApiKey').value = settings.azureApiKey;
-  document.getElementById('azureDeployment').value = settings.azureDeployment;
-  document.getElementById('azureApiVersion').value = settings.azureApiVersion;
-  
-  // Toggle Azure settings visibility
-  toggleAzureSettings(settings.useAzure);
-  
-  // Handle Azure toggle
-  document.getElementById('useAzure').addEventListener('change', (e) => {
-    toggleAzureSettings(e.target.checked);
-  });
-  
-  // Handle save
-  document.getElementById('saveSettings').addEventListener('click', async () => {
-    const newSettings = {
-      useAzure: document.getElementById('useAzure').checked,
-      openaiApiKey: document.getElementById('openaiApiKey').value,
-      azureEndpoint: document.getElementById('azureEndpoint').value,
-      azureApiKey: document.getElementById('azureApiKey').value,
-      azureDeployment: document.getElementById('azureDeployment').value,
-      azureApiVersion: document.getElementById('azureApiVersion').value,
-    };
-    
-    await window.electronAPI.saveSettings(newSettings);
-    alert('Settings saved successfully!');
-  });
-  
-  function toggleAzureSettings(showAzure) {
-    document.getElementById('openaiSettings').style.display = showAzure ? 'none' : 'block';
-    document.getElementById('azureSettings').style.display = showAzure ? 'block' : 'none';
-  }
-});
-``` 
+**Version**: 1.0.0 | **Last Updated**: January 2025

@@ -11,36 +11,40 @@ class TrayManager {
   }
 
   createTray() {
-    console.log('Creating tray icon...');
     const iconPath = path.join(__dirname, '../../assets/Texty.png');
 
     try {
       if (fs.existsSync(iconPath)) {
-        console.log('Icon file exists at:', iconPath);
-        
-        // Create tray icon
-        const trayIcon = process.platform === 'darwin'
-          ? nativeImage.createFromPath(iconPath)
-          : nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 });
+        // Create tray icon - properly sized for macOS menu bar
+        let trayIcon = nativeImage.createFromPath(iconPath);
+
+        if (process.platform === 'darwin') {
+          // macOS menu bar needs 16x16 or 22x22 template image
+          trayIcon = trayIcon.resize({ width: 22, height: 22 });
+          trayIcon.setTemplateImage(true); // Makes it adapt to light/dark mode
+        } else {
+          trayIcon = trayIcon.resize({ width: 16, height: 16 });
+        }
 
         this.tray = new Tray(trayIcon);
-        this.tray.setToolTip('Text Update App');
+        this.tray.setToolTip('✨ Text Update - Ready to go!');
 
         // Create context menu
         this.updateContextMenu();
 
-        // Handle double click
-        this.tray.on('double-click', () => {
+        // Handle click - show app on single click (macOS menu bar style)
+        this.tray.on('click', () => {
           if (!this.mainWindow) return;
-          
+
           if (this.mainWindow.isVisible()) {
             this.mainWindow.hide();
           } else {
             this.mainWindow.show();
+            this.mainWindow.focus();
           }
         });
 
-        console.log('Tray setup complete');
+        console.log('✓ Tray icon ready in menu bar');
       } else {
         console.error('Icon file not found at:', iconPath);
       }
@@ -52,24 +56,57 @@ class TrayManager {
   updateContextMenu() {
     const contextMenu = Menu.buildFromTemplate([
       {
-        label: 'Show App',
+        label: '✨ Text Update',
+        enabled: false
+      },
+      { type: 'separator' },
+      {
+        label: 'Show Dashboard',
         click: () => {
           if (!this.mainWindow) return;
           this.mainWindow.show();
+          this.mainWindow.focus();
         }
       },
       { type: 'separator' },
       {
-        label: 'Grammar Check',
-        accelerator: 'CommandOrControl+Shift+G',
-        type: 'checkbox',
-        checked: true
+        label: '📝 View History',
+        click: () => {
+          if (!this.mainWindow) return;
+          this.mainWindow.show();
+          this.mainWindow.focus();
+          this.mainWindow.webContents.send('show-history');
+        }
       },
       {
-        label: 'Rephrase',
-        accelerator: 'CommandOrControl+Shift+R',
-        type: 'checkbox',
-        checked: true
+        label: '📊 Usage Stats',
+        click: () => {
+          if (!this.mainWindow) return;
+          this.mainWindow.show();
+          this.mainWindow.focus();
+          this.mainWindow.webContents.send('show-stats');
+        }
+      },
+      { type: 'separator' },
+      {
+        label: 'Quick Actions:',
+        enabled: false
+      },
+      {
+        label: '  Grammar Check (⌘⇧G)',
+        enabled: false
+      },
+      {
+        label: '  Rephrase (⌘⇧R)',
+        enabled: false
+      },
+      {
+        label: '  Summarize (⌘⇧S)',
+        enabled: false
+      },
+      {
+        label: '  Translate (⌘⇧T)',
+        enabled: false
       },
       { type: 'separator' },
       {
@@ -77,12 +114,14 @@ class TrayManager {
         click: () => {
           if (!this.mainWindow) return;
           this.mainWindow.show();
+          this.mainWindow.focus();
           this.mainWindow.webContents.send('show-settings');
         }
       },
       { type: 'separator' },
       {
-        label: 'Quit',
+        label: 'Quit Text Update',
+        accelerator: 'CommandOrControl+Q',
         click: () => this.app.quit()
       }
     ]);

@@ -12,7 +12,6 @@ class MainProcess {
     this.trayManager = null;
     this.autoUpdater = null;
     this.textHistory = [];
-    this.pendingChange = null;
 
     // Bind methods
     this.createWindow = this.createWindow.bind(this);
@@ -79,31 +78,11 @@ class MainProcess {
 
     ipcMain.handle('save-settings', (_, settings) => {
       config.saveSettings(settings);
-
-      // Reinitialize the OpenAI service with new settings
       openaiService.initializeOpenAI();
     });
 
     ipcMain.handle('reset-settings', () => {
       config.resetSettings();
-    });
-
-    ipcMain.handle('apply-text-change', async (_, text) => {
-      if (this.pendingChange) {
-        await clipboardManager.replaceSelectedText(text);
-
-        // Add to history
-        this.addToHistory({
-          type: this.pendingChange.type,
-          original: this.pendingChange.original,
-          modified: text,
-          timestamp: new Date().toISOString()
-        });
-
-        this.pendingChange = null;
-        return true;
-      }
-      return false;
     });
 
     ipcMain.handle('get-history', () => {
@@ -138,162 +117,118 @@ class MainProcess {
   }
 
   async handleGrammarCheck() {
-    const startTime = Date.now();
     try {
-      this.mainWindow.webContents.send('processing-start', 'grammar');
-      this.showNotification('Grammar Check', 'Getting selected text...');
-
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
-        this.showNotification('Grammar Check', 'No text selected');
-        this.mainWindow.webContents.send('processing-end');
+        this.showNotification('✨ Grammar Check', 'No text selected');
         return;
       }
 
-      this.showNotification('Grammar Check', 'Checking grammar...');
+      this.showNotification('✨ Grammar Check', 'Working magic...');
       const correctedText = await openaiService.checkGrammar(text);
-      const responseTime = Date.now() - startTime;
 
-      // Store pending change and show preview
-      this.pendingChange = {
-        type: 'grammar',
-        original: text,
-        modified: correctedText
-      };
+      // Instantly replace!
+      await clipboardManager.replaceSelectedText(correctedText);
 
-      this.mainWindow.webContents.send('show-preview', {
+      // Add to history
+      this.addToHistory({
         type: 'grammar',
         original: text,
         modified: correctedText,
-        responseTime
+        timestamp: new Date().toISOString()
       });
 
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Grammar Check', 'Review changes in the preview');
+      this.showNotification('✓ Grammar Check', 'Done!');
     } catch (error) {
       console.error('Grammar check error:', error);
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Error', 'Failed to check grammar: ' + error.message);
+      this.showNotification('Grammar Check', 'Oops, something went wrong');
     }
   }
 
   async handleRephrase() {
-    const startTime = Date.now();
     try {
-      this.mainWindow.webContents.send('processing-start', 'rephrase');
-      this.showNotification('Rephrase', 'Getting selected text...');
-
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
-        this.showNotification('Rephrase', 'No text selected');
-        this.mainWindow.webContents.send('processing-end');
+        this.showNotification('✨ Rephrase', 'No text selected');
         return;
       }
 
-      this.showNotification('Rephrase', 'Rephrasing text...');
+      this.showNotification('✨ Rephrase', 'Making it better...');
       const rephrasedText = await openaiService.rephraseText(text);
-      const responseTime = Date.now() - startTime;
 
-      // Store pending change and show preview
-      this.pendingChange = {
-        type: 'rephrase',
-        original: text,
-        modified: rephrasedText
-      };
+      // Instantly replace!
+      await clipboardManager.replaceSelectedText(rephrasedText);
 
-      this.mainWindow.webContents.send('show-preview', {
+      // Add to history
+      this.addToHistory({
         type: 'rephrase',
         original: text,
         modified: rephrasedText,
-        responseTime
+        timestamp: new Date().toISOString()
       });
 
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Rephrase', 'Review changes in the preview');
+      this.showNotification('✓ Rephrase', 'Done!');
     } catch (error) {
       console.error('Rephrase error:', error);
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Error', 'Failed to rephrase text: ' + error.message);
+      this.showNotification('Rephrase', 'Oops, something went wrong');
     }
   }
 
   async handleSummarize() {
-    const startTime = Date.now();
     try {
-      this.mainWindow.webContents.send('processing-start', 'summarize');
-      this.showNotification('Summarize', 'Getting selected text...');
-
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
-        this.showNotification('Summarize', 'No text selected');
-        this.mainWindow.webContents.send('processing-end');
+        this.showNotification('✨ Summarize', 'No text selected');
         return;
       }
 
-      this.showNotification('Summarize', 'Summarizing text...');
+      this.showNotification('✨ Summarize', 'Condensing...');
       const summarizedText = await openaiService.summarizeText(text);
-      const responseTime = Date.now() - startTime;
 
-      // Store pending change and show preview
-      this.pendingChange = {
-        type: 'summarize',
-        original: text,
-        modified: summarizedText
-      };
+      // Instantly replace!
+      await clipboardManager.replaceSelectedText(summarizedText);
 
-      this.mainWindow.webContents.send('show-preview', {
+      // Add to history
+      this.addToHistory({
         type: 'summarize',
         original: text,
         modified: summarizedText,
-        responseTime
+        timestamp: new Date().toISOString()
       });
 
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Summarize', 'Review changes in the preview');
+      this.showNotification('✓ Summarize', 'Done!');
     } catch (error) {
       console.error('Summarize error:', error);
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Error', 'Failed to summarize text: ' + error.message);
+      this.showNotification('Summarize', 'Oops, something went wrong');
     }
   }
 
   async handleTranslate() {
-    const startTime = Date.now();
     try {
-      this.mainWindow.webContents.send('processing-start', 'translate');
-      this.showNotification('Translate', 'Getting selected text...');
-
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
-        this.showNotification('Translate', 'No text selected');
-        this.mainWindow.webContents.send('processing-end');
+        this.showNotification('✨ Translate', 'No text selected');
         return;
       }
 
-      this.showNotification('Translate', 'Translating text...');
+      this.showNotification('✨ Translate', 'Translating...');
       const translatedText = await openaiService.translateText(text);
-      const responseTime = Date.now() - startTime;
 
-      // Store pending change and show preview
-      this.pendingChange = {
-        type: 'translate',
-        original: text,
-        modified: translatedText
-      };
+      // Instantly replace!
+      await clipboardManager.replaceSelectedText(translatedText);
 
-      this.mainWindow.webContents.send('show-preview', {
+      // Add to history
+      this.addToHistory({
         type: 'translate',
         original: text,
         modified: translatedText,
-        responseTime
+        timestamp: new Date().toISOString()
       });
 
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Translate', 'Review changes in the preview');
+      this.showNotification('✓ Translate', 'Done!');
     } catch (error) {
       console.error('Translate error:', error);
-      this.mainWindow.webContents.send('processing-end');
-      this.showNotification('Error', 'Failed to translate text: ' + error.message);
+      this.showNotification('Translate', 'Oops, something went wrong');
     }
   }
 

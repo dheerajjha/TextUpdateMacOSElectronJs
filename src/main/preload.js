@@ -7,31 +7,23 @@ contextBridge.exposeInMainWorld('api', {
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
   resetSettings: () => ipcRenderer.invoke('reset-settings'),
 
-  // Text operations
-  applyTextChange: (text) => ipcRenderer.invoke('apply-text-change', text),
-
   // History
   getHistory: () => ipcRenderer.invoke('get-history'),
   clearHistory: () => ipcRenderer.invoke('clear-history'),
 
-  // Event listeners
+  // Event listeners for menu bar actions
   onShowSettings: (callback) => {
     ipcRenderer.on('show-settings', () => callback());
     return () => ipcRenderer.removeListener('show-settings', callback);
   },
 
-  onShowPreview: (callback) => {
-    ipcRenderer.on('show-preview', (_, data) => callback(data));
-    return () => ipcRenderer.removeListener('show-preview', callback);
+  onShowHistory: (callback) => {
+    ipcRenderer.on('show-history', () => callback());
+    return () => ipcRenderer.removeListener('show-history', callback);
   },
 
-  onProcessingStart: (callback) => {
-    ipcRenderer.on('processing-start', (_, type) => callback(type));
-    return () => ipcRenderer.removeListener('processing-start', callback);
-  },
-
-  onProcessingEnd: (callback) => {
-    ipcRenderer.on('processing-end', () => callback());
-    return () => ipcRenderer.removeListener('processing-end', callback);
+  onShowStats: (callback) => {
+    ipcRenderer.on('show-stats', () => callback());
+    return () => ipcRenderer.removeListener('show-stats', callback);
   }
 }); 

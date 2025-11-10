@@ -228,27 +228,27 @@ async function loadSettings() {
   }
 }
 
-// Listen for settings panel request
+// Listen for menu bar actions
 window.api.onShowSettings(() => {
   loadSettings();
   settingsModal.style.display = 'block';
 });
 
-// Listen for preview events
-window.api.onShowPreview((data) => {
-  showTextPreview(data.original, data.modified, data.type, data.responseTime);
-  // Show the main window if it's hidden
-  window.focus();
-});
+// Listen for show-history from menu bar
+if (window.api.onShowHistory) {
+  window.api.onShowHistory(() => {
+    updateHistoryDisplay();
+    historyModal.style.display = 'block';
+  });
+}
 
-// Listen for processing events
-window.api.onProcessingStart((type) => {
-  showProcessingIndicator(type);
-});
-
-window.api.onProcessingEnd(() => {
-  hideProcessingIndicator();
-});
+// Listen for show-stats from menu bar
+if (window.api.onShowStats) {
+  window.api.onShowStats(() => {
+    updateStatsDisplay();
+    statsModal.style.display = 'block';
+  });
+}
 
 // Stats management
 clearStatsBtn.addEventListener('click', () => {

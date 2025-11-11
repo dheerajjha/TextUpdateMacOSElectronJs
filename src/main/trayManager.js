@@ -12,19 +12,30 @@ class TrayManager {
 
   createTray() {
     console.log('Creating tray icon...');
-    const iconPath = path.join(__dirname, '../../assets/Texty.png');
+
+    // Use tray-icon.png for all platforms
+    const iconPath = path.join(__dirname, '../../assets/tray-icon.png');
 
     try {
       if (fs.existsSync(iconPath)) {
         console.log('Icon file exists at:', iconPath);
-        
-        // Create tray icon
-        const trayIcon = process.platform === 'darwin'
-          ? nativeImage.createFromPath(iconPath)
-          : nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 });
+
+        // Create tray icon with proper sizing for each platform
+        let trayIcon;
+        if (process.platform === 'darwin') {
+          // macOS - use template mode for automatic dark mode support
+          trayIcon = nativeImage.createFromPath(iconPath);
+          trayIcon.setTemplateImage(true);
+        } else if (process.platform === 'win32') {
+          // Windows - use 16x16
+          trayIcon = nativeImage.createFromPath(iconPath).resize({ width: 16, height: 16 });
+        } else {
+          // Linux - typically 22x22
+          trayIcon = nativeImage.createFromPath(iconPath).resize({ width: 22, height: 22 });
+        }
 
         this.tray = new Tray(trayIcon);
-        this.tray.setToolTip('Text Update App');
+        this.tray.setToolTip('Grammar Ji');
 
         // Create context menu
         this.updateContextMenu();

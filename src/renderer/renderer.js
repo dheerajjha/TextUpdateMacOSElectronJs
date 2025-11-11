@@ -42,7 +42,7 @@ const rejectChanges = document.getElementById('rejectChanges');
 
 // State management
 let currentTheme = localStorage.getItem('theme') || 'light';
-let stats = JSON.parse(localStorage.getItem('textUpdateStats')) || {
+let stats = JSON.parse(localStorage.getItem('grammarJiStats')) || {
   grammarChecks: 0,
   rephrases: 0,
   summarizations: 0,
@@ -218,7 +218,7 @@ clearStatsBtn.addEventListener('click', () => {
       responseTimes: [],
       recentActivity: []
     };
-    localStorage.setItem('textUpdateStats', JSON.stringify(stats));
+    localStorage.setItem('grammarJiStats', JSON.stringify(stats));
     updateStatsDisplay();
     showStatusMessage('Statistics cleared', 'success');
   }
@@ -230,7 +230,7 @@ exportStatsBtn.addEventListener('click', () => {
   const url = URL.createObjectURL(dataBlob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `text-update-stats-${new Date().toISOString().split('T')[0]}.json`;
+  link.download = `grammar-ji-stats-${new Date().toISOString().split('T')[0]}.json`;
   link.click();
   URL.revokeObjectURL(url);
   showStatusMessage('Statistics exported', 'success');
@@ -334,7 +334,7 @@ function updateStats(type, wordCount, responseTime) {
     }
   }
   
-  localStorage.setItem('textUpdateStats', JSON.stringify(stats));
+  localStorage.setItem('grammarJiStats', JSON.stringify(stats));
 }
 
 function updateStatsDisplay() {
@@ -362,7 +362,7 @@ function addToRecentActivity(type, wordCount) {
     stats.recentActivity.pop();
   }
   
-  localStorage.setItem('textUpdateStats', JSON.stringify(stats));
+  localStorage.setItem('grammarJiStats', JSON.stringify(stats));
 }
 
 function updateRecentActivityDisplay() {

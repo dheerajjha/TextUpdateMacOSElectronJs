@@ -1,7 +1,7 @@
-# Text Update Application - Electron.js Implementation Guide
+# Grammar Ji - Electron.js Implementation Guide
 
 ## Overview
-This document outlines the implementation of a text update application using Electron.js. The application allows users to check grammar and rephrase text using keyboard shortcuts, similar to the macOS version.
+This document outlines the implementation of Grammar Ji, an AI-powered writing assistant using Electron.js. The application allows users to check grammar, rephrase, summarize, and translate text using keyboard shortcuts.
 
 ## Core Features
 1. Global keyboard shortcuts for text operations
@@ -30,7 +30,7 @@ These values are used in the application by default, but can be changed through 
 
 ## Project Structure
 ```
-text-update-app/
+grammar-ji/
 ├── package.json
 ├── main.js
 ├── preload.js
@@ -50,9 +50,9 @@ text-update-app/
 ### 1. Package.json Setup
 ```json
 {
-  "name": "text-update-app",
+  "name": "grammar-ji",
   "version": "1.0.0",
-  "description": "Text Update Application with Grammar and Rephrasing Features",
+  "description": "Grammar Ji - Your AI-powered writing assistant",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -245,12 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Text Update App</title>
+  <title>Grammar Ji</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>Text Update App</h1>
+    <h1>Grammar Ji</h1>
     <div class="shortcuts">
       <h2>Keyboard Shortcuts</h2>
       <p>Command+Shift+G: Check Grammar</p>
@@ -434,7 +434,7 @@ module.exports = { setupSettingsHandlers };
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Settings - Text Update App</title>
+  <title>Settings - Grammar Ji</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>

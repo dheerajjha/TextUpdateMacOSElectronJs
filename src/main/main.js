@@ -48,6 +48,7 @@ class MainProcess {
     this.mainWindow = new BrowserWindow({
       width: 800,
       height: 600,
+      title: 'Grammar Ji',
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,

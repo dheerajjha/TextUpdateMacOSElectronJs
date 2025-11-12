@@ -9,186 +9,147 @@
 <body>
   <div class="container">
     <header>
-      <div class="header-left">
-        <h1>Grammar Ji</h1>
-        <div class="status-indicator">
-          <span id="connectionStatus" class="status-dot connected"></span>
-          <span id="connectionText">Connected</span>
-        </div>
-      </div>
-      <nav>
+      <h1>Grammar Ji</h1>
+      <div class="header-actions">
         <button id="themeToggle" class="icon-btn" title="Toggle Theme">
           <span class="theme-icon">🌙</span>
         </button>
-        <button id="statsBtn">Stats</button>
-        <button id="helpBtn">Help</button>
-      </nav>
+        <button id="statsBtn" class="icon-btn" title="Statistics">📊</button>
+        <button id="helpBtn" class="icon-btn" title="Help">?</button>
+      </div>
     </header>
 
     <main>
-      <div class="info-banner">
-        <p>✨ Grammar Ji is <strong>free for everyone</strong> - No API key required!</p>
-      </div>
-
-      <div class="features-grid">
-        <!-- Grammar Check -->
-        <div class="feature-card">
-          <div class="feature-header">
-            <input type="checkbox" id="featureGrammar" class="feature-toggle" checked>
-            <label for="featureGrammar" class="feature-title">
+      <table class="features-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Enabled</th>
+            <th>Shortcut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
               <span class="feature-icon">✓</span>
               <span>Grammar Check</span>
-            </label>
-          </div>
-          <div class="shortcut-recorder">
-            <button class="shortcut-btn" data-feature="grammar" id="shortcutGrammar">
-              <span class="shortcut-display">⌘⇧G</span>
-              <span class="shortcut-hint">Click to record</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Rephrase -->
-        <div class="feature-card">
-          <div class="feature-header">
-            <input type="checkbox" id="featureRephrase" class="feature-toggle" checked>
-            <label for="featureRephrase" class="feature-title">
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" id="featureGrammar" checked>
+                <span class="slider"></span>
+              </label>
+            </td>
+            <td>
+              <button class="shortcut-btn" data-feature="grammar" id="shortcutGrammar">
+                <span class="shortcut-display">⌘⇧G</span>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>
               <span class="feature-icon">🔄</span>
-              <span>Rephrase Text</span>
-            </label>
-          </div>
-          <div class="shortcut-recorder">
-            <button class="shortcut-btn" data-feature="rephrase" id="shortcutRephrase">
-              <span class="shortcut-display">⌘⇧R</span>
-              <span class="shortcut-hint">Click to record</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Summarize -->
-        <div class="feature-card">
-          <div class="feature-header">
-            <input type="checkbox" id="featureSummarize" class="feature-toggle">
-            <label for="featureSummarize" class="feature-title">
+              <span>Rephrase</span>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" id="featureRephrase" checked>
+                <span class="slider"></span>
+              </label>
+            </td>
+            <td>
+              <button class="shortcut-btn" data-feature="rephrase" id="shortcutRephrase">
+                <span class="shortcut-display">⌘⇧R</span>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>
               <span class="feature-icon">📝</span>
-              <span>Summarize Text</span>
-            </label>
-          </div>
-          <div class="shortcut-recorder">
-            <button class="shortcut-btn" data-feature="summarize" id="shortcutSummarize">
-              <span class="shortcut-display">⌘⇧S</span>
-              <span class="shortcut-hint">Click to record</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Translate -->
-        <div class="feature-card">
-          <div class="feature-header">
-            <input type="checkbox" id="featureTranslate" class="feature-toggle">
-            <label for="featureTranslate" class="feature-title">
+              <span>Summarize</span>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" id="featureSummarize">
+                <span class="slider"></span>
+              </label>
+            </td>
+            <td>
+              <button class="shortcut-btn" data-feature="summarize" id="shortcutSummarize">
+                <span class="shortcut-display">⌘⇧S</span>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>
               <span class="feature-icon">🌐</span>
-              <span>Translate Text</span>
-            </label>
-          </div>
-          <div class="shortcut-recorder">
-            <button class="shortcut-btn" data-feature="translate" id="shortcutTranslate">
-              <span class="shortcut-display">⌘⇧T</span>
-              <span class="shortcut-hint">Click to record</span>
-            </button>
-          </div>
-        </div>
+              <span>Translate</span>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" id="featureTranslate">
+                <span class="slider"></span>
+              </label>
+            </td>
+            <td>
+              <button class="shortcut-btn" data-feature="translate" id="shortcutTranslate">
+                <span class="shortcut-display">⌘⇧T</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="settings-row">
+        <label class="setting-item">
+          <input type="checkbox" id="showNotifications" checked>
+          <span>Notifications</span>
+        </label>
+        <label class="setting-item">
+          <input type="checkbox" id="startMinimized">
+          <span>Start Minimized</span>
+        </label>
       </div>
 
-      <div class="settings-section">
-        <h3>General Settings</h3>
-        <div class="settings-options">
-          <label class="setting-option">
-            <input type="checkbox" id="showNotifications" checked>
-            <span>Show Notifications</span>
-          </label>
-          <label class="setting-option">
-            <input type="checkbox" id="startMinimized">
-            <span>Start Minimized</span>
-          </label>
-        </div>
-        <button id="saveSettingsBtn" class="save-btn">Save Settings & Restart</button>
-      </div>
-
-      <div class="usage-instructions">
-        <h3>How to Use</h3>
-        <ol>
-          <li>Enable features you want to use</li>
-          <li>Click on shortcut buttons to customize (press keys to record)</li>
-          <li>Select text in any application and use shortcuts</li>
-        </ol>
-      </div>
+      <button id="saveSettingsBtn" class="primary-btn">Apply Changes</button>
     </main>
 
     <footer>
-      <p>Grammar Ji - Your AI-powered writing assistant</p>
+      <span class="status-dot connected" id="connectionStatus"></span>
+      <span id="connectionText">Ready</span>
     </footer>
   </div>
 
   <!-- Stats Modal -->
   <div id="statsModal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Usage Statistics</h2>
-      
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Grammar Checks</h3>
-          <div class="stat-number" id="grammarCount">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Rephrases</h3>
-          <div class="stat-number" id="rephraseCount">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Words Processed</h3>
-          <div class="stat-number" id="wordsCount">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Average Response Time</h3>
-          <div class="stat-number" id="avgResponseTime">0ms</div>
-        </div>
+      <div class="modal-header">
+        <h2>Statistics</h2>
+        <span class="close">&times;</span>
       </div>
-      
-      <div class="recent-activity">
-        <h3>Recent Activity</h3>
-        <div id="recentActivityList" class="activity-list">
-          <p class="no-activity">No recent activity</p>
-        </div>
-      </div>
-      
-      <div class="stats-actions">
-        <button id="clearStatsBtn">Clear Statistics</button>
-        <button id="exportStatsBtn">Export Data</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Text Preview Modal -->
-  <div id="previewModal" class="modal">
-    <div class="modal-content preview-content">
-      <span class="close">&times;</span>
-      <h2>Text Comparison</h2>
-      
-      <div class="text-comparison">
-        <div class="text-section">
-          <h3>Original</h3>
-          <div id="originalText" class="text-display"></div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">Grammar</span>
+          <span class="stat-value" id="grammarCount">0</span>
         </div>
-        <div class="text-section">
-          <h3>Modified</h3>
-          <div id="modifiedText" class="text-display"></div>
+        <div class="stat-item">
+          <span class="stat-label">Rephrase</span>
+          <span class="stat-value" id="rephraseCount">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Words</span>
+          <span class="stat-value" id="wordsCount">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Avg Time</span>
+          <span class="stat-value" id="avgResponseTime">0ms</span>
         </div>
       </div>
-      
-      <div class="preview-actions">
-        <button id="acceptChanges">Accept Changes</button>
-        <button id="rejectChanges">Reject Changes</button>
+
+      <div class="stats-actions">
+        <button id="clearStatsBtn" class="secondary-btn">Clear</button>
+        <button id="exportStatsBtn" class="secondary-btn">Export</button>
       </div>
     </div>
   </div>
@@ -196,43 +157,56 @@
   <!-- Help Modal -->
   <div id="helpModal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Help</h2>
-      
-      <h3>About</h3>
-      <p>Grammar Ji is your AI-powered writing assistant that helps you improve your text by checking grammar, rephrasing, summarizing, and translating using AI.</p>
-      
-      <h3>Features</h3>
-      <ul>
-        <li>Grammar checking with AI</li>
-        <li>Text rephrasing for clarity</li>
-        <li>Text summarization</li>
-        <li>Text translation</li>
-        <li>Global keyboard shortcuts</li>
-        <li>Usage statistics tracking</li>
-        <li>Dark/Light theme support</li>
-        <li>Works with any application</li>
-      </ul>
-      
-      <h3>Keyboard Shortcuts</h3>
-      <ul>
-        <li><strong>⌘⇧G</strong> - Grammar Check</li>
-        <li><strong>⌘⇧R</strong> - Rephrase Text</li>
-        <li><strong>⌘⇧S</strong> - Summarize Text</li>
-        <li><strong>⌘⇧T</strong> - Translate Text</li>
-      </ul>
-      
-      <h3>Troubleshooting</h3>
-      <p>If you encounter issues:</p>
-      <ul>
-        <li>Ensure you have an active internet connection</li>
-        <li>Verify your API key is correctly configured</li>
-        <li>Check the connection status indicator</li>
-        <li>Restart the application</li>
-      </ul>
+      <div class="modal-header">
+        <h2>Help</h2>
+        <span class="close">&times;</span>
+      </div>
+
+      <div class="help-content">
+        <p><strong>Grammar Ji</strong> is your AI-powered writing assistant.</p>
+
+        <h3>How to Use</h3>
+        <ol>
+          <li>Enable features you need</li>
+          <li>Click shortcut buttons to customize</li>
+          <li>Select text anywhere and use shortcuts</li>
+          <li>Text is automatically improved!</li>
+        </ol>
+
+        <h3>Requirements</h3>
+        <ul>
+          <li>macOS 12.0 or later</li>
+          <li>Internet connection</li>
+          <li>Accessibility permission</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div id="previewModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Preview</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="text-comparison">
+        <div class="text-section">
+          <h4>Original</h4>
+          <div id="originalText" class="text-display"></div>
+        </div>
+        <div class="text-section">
+          <h4>Modified</h4>
+          <div id="modifiedText" class="text-display"></div>
+        </div>
+      </div>
+      <div class="preview-actions">
+        <button id="rejectChanges" class="secondary-btn">Cancel</button>
+        <button id="acceptChanges" class="primary-btn">Accept</button>
+      </div>
     </div>
   </div>
 
   <script src="renderer.js"></script>
 </body>
-</html> 
+</html>

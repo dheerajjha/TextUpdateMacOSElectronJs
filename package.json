@@ -51,7 +51,8 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "type": "distribution"
+      "type": "distribution",
+      "minimumSystemVersion": "12.0"
     },
     "mas": {
       "hardenedRuntime": false,
@@ -59,7 +60,9 @@
       "entitlementsInherit": "build/entitlements.mac.plist",
       "category": "public.app-category.productivity",
       "type": "distribution",
-      "identity": "48DE4C47696F4D13D0F643538B0ACF29C865934E"
+      "identity": "48DE4C47696F4D13D0F643538B0ACF29C865934E",
+      "minimumSystemVersion": "12.0",
+      "provisioningProfile": "build/embedded.provisionprofile"
     },
     "win": {
       "target": [

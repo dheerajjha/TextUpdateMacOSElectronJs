@@ -6,26 +6,6 @@ class ConfigManager {
     this.store = store;
   }
 
-  // OpenAI Configuration
-  get openAIConfig() {
-    const useAzure = this.store.get('useAzure', true);
-    
-    if (useAzure) {
-      return {
-        useAzure: true,
-        azureEndpoint: this.store.get('azureEndpoint', 'init.openai.azure.com'),
-        azureDeployment: this.store.get('azureDeployment', 'gpt-4o'),
-        azureApiVersion: this.store.get('azureApiVersion', '2025-01-01-preview'),
-        apiKey: this.store.get('azureApiKey', '')
-      };
-    } else {
-      return {
-        useAzure: false,
-        apiKey: this.store.get('openaiApiKey', '')
-      };
-    }
-  }
-
   // App Settings
   get appSettings() {
     return {

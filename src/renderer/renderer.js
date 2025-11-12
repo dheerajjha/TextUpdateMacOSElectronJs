@@ -10,9 +10,6 @@ const previewModal = document.getElementById('previewModal');
 const closeButtons = document.querySelectorAll('.close');
 const settingsForm = document.getElementById('settingsForm');
 const resetBtn = document.getElementById('resetBtn');
-const apiTypeRadios = document.querySelectorAll('input[name="apiType"]');
-const azureSettings = document.getElementById('azureSettings');
-const openaiSettings = document.getElementById('openaiSettings');
 const statusMessage = document.getElementById('statusMessage');
 const connectionStatus = document.getElementById('connectionStatus');
 const connectionText = document.getElementById('connectionText');
@@ -110,39 +107,16 @@ window.addEventListener('click', (event) => {
   }
 });
 
-// Toggle API settings visibility
-apiTypeRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
-    if (radio.value === 'azure') {
-      azureSettings.style.display = 'block';
-      openaiSettings.style.display = 'none';
-    } else {
-      azureSettings.style.display = 'none';
-      openaiSettings.style.display = 'block';
-    }
-  });
-});
-
 // Save settings
 settingsForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  
+
   try {
-    const apiType = document.querySelector('input[name="apiType"]:checked').value;
     const settings = {
-      useAzure: apiType === 'azure',
       showNotifications: document.getElementById('showNotifications').checked,
       startMinimized: document.getElementById('startMinimized').checked
     };
-    
-    if (apiType === 'azure') {
-      settings.azureEndpoint = document.getElementById('azureEndpoint').value;
-      settings.azureDeployment = document.getElementById('azureDeployment').value;
-      settings.azureApiKey = document.getElementById('azureApiKey').value;
-    } else {
-      settings.openaiApiKey = document.getElementById('openaiApiKey').value;
-    }
-    
+
     await window.api.saveSettings(settings);
     settingsModal.style.display = 'none';
     showStatusMessage('Settings saved successfully', 'success');
@@ -170,27 +144,7 @@ resetBtn.addEventListener('click', async () => {
 async function loadSettings() {
   try {
     const settings = await window.api.getSettings();
-    
-    // Set API type
-    document.querySelector(`input[name="apiType"][value="${settings.useAzure ? 'azure' : 'openai'}"]`).checked = true;
-    
-    // Toggle API settings visibility
-    if (settings.useAzure) {
-      azureSettings.style.display = 'block';
-      openaiSettings.style.display = 'none';
-    } else {
-      azureSettings.style.display = 'none';
-      openaiSettings.style.display = 'block';
-    }
-    
-    // Set Azure values
-    document.getElementById('azureEndpoint').value = settings.azureEndpoint || '';
-    document.getElementById('azureDeployment').value = settings.azureDeployment || '';
-    document.getElementById('azureApiKey').value = settings.azureApiKey || '';
-    
-    // Set OpenAI values
-    document.getElementById('openaiApiKey').value = settings.openaiApiKey || '';
-    
+
     // Set app settings
     document.getElementById('showNotifications').checked = settings.showNotifications !== false;
     document.getElementById('startMinimized').checked = settings.startMinimized === true;

@@ -67,17 +67,11 @@ class MainProcess {
 
   setupIpcHandlers() {
     ipcMain.handle('get-settings', () => {
-      return {
-        ...config.openAIConfig,
-        ...config.appSettings
-      };
+      return config.appSettings;
     });
 
     ipcMain.handle('save-settings', (_, settings) => {
       config.saveSettings(settings);
-      
-      // Reinitialize the OpenAI service with new settings
-      openaiService.initializeOpenAI();
     });
 
     ipcMain.handle('reset-settings', () => {

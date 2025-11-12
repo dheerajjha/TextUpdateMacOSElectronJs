@@ -94,44 +94,9 @@
       <h2>Settings</h2>
       
       <form id="settingsForm">
-        <h3>API Configuration</h3>
-        <div class="form-group">
-          <label>
-            <input type="radio" name="apiType" value="azure" checked>
-            Azure OpenAI
-          </label>
-        </div>
-        
-        <div id="azureSettings">
-          <div class="form-group">
-            <label for="azureEndpoint">Azure Endpoint:</label>
-            <input type="text" id="azureEndpoint" placeholder="your-resource.openai.azure.com">
-          </div>
-          <div class="form-group">
-            <label for="azureDeployment">Deployment ID:</label>
-            <input type="text" id="azureDeployment" placeholder="gpt-4o">
-          </div>
-          <div class="form-group">
-            <label for="azureApiKey">API Key:</label>
-            <input type="password" id="azureApiKey">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>
-            <input type="radio" name="apiType" value="openai">
-            OpenAI
-          </label>
-        </div>
-        
-        <div id="openaiSettings" style="display:none;">
-          <div class="form-group">
-            <label for="openaiApiKey">API Key:</label>
-            <input type="password" id="openaiApiKey">
-          </div>
-        </div>
-        
         <h3>Application Settings</h3>
+        <p class="settings-note">Grammar Ji is free for everyone. No API key required!</p>
+
         <div class="form-group">
           <label>
             <input type="checkbox" id="showNotifications" checked>

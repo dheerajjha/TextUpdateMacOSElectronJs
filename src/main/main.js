@@ -77,15 +77,36 @@ class MainProcess {
     ipcMain.handle('reset-settings', () => {
       config.resetSettings();
     });
+
+    ipcMain.handle('restart-app', () => {
+      app.relaunch();
+      app.quit();
+    });
   }
 
   setupShortcuts() {
-    const shortcuts = config.appSettings.shortcuts;
+    const { features, shortcuts } = config.appSettings;
 
-    globalShortcut.register(shortcuts.grammar, this.handleGrammarCheck);
-    globalShortcut.register(shortcuts.rephrase, this.handleRephrase);
-    globalShortcut.register(shortcuts.summarize, this.handleSummarize);
-    globalShortcut.register(shortcuts.translate, this.handleTranslate);
+    // Only register shortcuts for enabled features
+    if (features.grammar && shortcuts.grammar) {
+      const registered = globalShortcut.register(shortcuts.grammar, this.handleGrammarCheck);
+      console.log('Grammar shortcut registered:', registered, shortcuts.grammar);
+    }
+
+    if (features.rephrase && shortcuts.rephrase) {
+      const registered = globalShortcut.register(shortcuts.rephrase, this.handleRephrase);
+      console.log('Rephrase shortcut registered:', registered, shortcuts.rephrase);
+    }
+
+    if (features.summarize && shortcuts.summarize) {
+      const registered = globalShortcut.register(shortcuts.summarize, this.handleSummarize);
+      console.log('Summarize shortcut registered:', registered, shortcuts.summarize);
+    }
+
+    if (features.translate && shortcuts.translate) {
+      const registered = globalShortcut.register(shortcuts.translate, this.handleTranslate);
+      console.log('Translate shortcut registered:', registered, shortcuts.translate);
+    }
 
     app.on('will-quit', () => {
       globalShortcut.unregisterAll();

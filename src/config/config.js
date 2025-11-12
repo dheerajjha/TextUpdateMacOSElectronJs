@@ -9,6 +9,14 @@ class ConfigManager {
   // App Settings
   get appSettings() {
     return {
+      // Feature toggles
+      features: {
+        grammar: this.store.get('features.grammar', true),
+        rephrase: this.store.get('features.rephrase', true),
+        summarize: this.store.get('features.summarize', false),
+        translate: this.store.get('features.translate', false)
+      },
+      // Keyboard shortcuts
       shortcuts: {
         grammar: this.store.get('shortcuts.grammar', 'CommandOrControl+Shift+G'),
         rephrase: this.store.get('shortcuts.rephrase', 'CommandOrControl+Shift+R'),

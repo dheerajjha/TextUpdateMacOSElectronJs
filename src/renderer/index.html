@@ -21,63 +21,106 @@
           <span class="theme-icon">🌙</span>
         </button>
         <button id="statsBtn">Stats</button>
-        <button id="settingsBtn">Settings</button>
         <button id="helpBtn">Help</button>
       </nav>
     </header>
 
     <main>
-      <div class="status-panel">
-        <h2>Status</h2>
-        <p id="statusMessage">Ready - Use global shortcuts to check grammar or rephrase text</p>
-        <div class="activity-indicator">
-          <div id="processingIndicator" class="processing-spinner hidden">
-            <div class="spinner"></div>
-            <span id="processingText">Processing...</span>
+      <div class="info-banner">
+        <p>✨ Grammar Ji is <strong>free for everyone</strong> - No API key required!</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Grammar Check -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <input type="checkbox" id="featureGrammar" class="feature-toggle" checked>
+            <label for="featureGrammar" class="feature-title">
+              <span class="feature-icon">✓</span>
+              <span>Grammar Check</span>
+            </label>
+          </div>
+          <div class="shortcut-recorder">
+            <button class="shortcut-btn" data-feature="grammar" id="shortcutGrammar">
+              <span class="shortcut-display">⌘⇧G</span>
+              <span class="shortcut-hint">Click to record</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Rephrase -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <input type="checkbox" id="featureRephrase" class="feature-toggle" checked>
+            <label for="featureRephrase" class="feature-title">
+              <span class="feature-icon">🔄</span>
+              <span>Rephrase Text</span>
+            </label>
+          </div>
+          <div class="shortcut-recorder">
+            <button class="shortcut-btn" data-feature="rephrase" id="shortcutRephrase">
+              <span class="shortcut-display">⌘⇧R</span>
+              <span class="shortcut-hint">Click to record</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summarize -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <input type="checkbox" id="featureSummarize" class="feature-toggle">
+            <label for="featureSummarize" class="feature-title">
+              <span class="feature-icon">📝</span>
+              <span>Summarize Text</span>
+            </label>
+          </div>
+          <div class="shortcut-recorder">
+            <button class="shortcut-btn" data-feature="summarize" id="shortcutSummarize">
+              <span class="shortcut-display">⌘⇧S</span>
+              <span class="shortcut-hint">Click to record</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Translate -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <input type="checkbox" id="featureTranslate" class="feature-toggle">
+            <label for="featureTranslate" class="feature-title">
+              <span class="feature-icon">🌐</span>
+              <span>Translate Text</span>
+            </label>
+          </div>
+          <div class="shortcut-recorder">
+            <button class="shortcut-btn" data-feature="translate" id="shortcutTranslate">
+              <span class="shortcut-display">⌘⇧T</span>
+              <span class="shortcut-hint">Click to record</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div class="quick-actions-panel">
-        <h2>Quick Actions</h2>
-        <div class="action-buttons">
-          <button id="grammarBtn" class="action-btn">
-            <span class="btn-icon">✓</span>
-            <span class="btn-text">Grammar Check</span>
-            <span class="btn-shortcut">⌘⇧G</span>
-          </button>
-          <button id="rephraseBtn" class="action-btn">
-            <span class="btn-icon">🔄</span>
-            <span class="btn-text">Rephrase</span>
-            <span class="btn-shortcut">⌘⇧R</span>
-          </button>
-          <button id="summarizeBtn" class="action-btn">
-            <span class="btn-icon">📝</span>
-            <span class="btn-text">Summarize</span>
-            <span class="btn-shortcut">⌘⇧S</span>
-          </button>
-          <button id="translateBtn" class="action-btn">
-            <span class="btn-icon">🌐</span>
-            <span class="btn-text">Translate</span>
-            <span class="btn-shortcut">⌘⇧T</span>
-          </button>
+      <div class="settings-section">
+        <h3>General Settings</h3>
+        <div class="settings-options">
+          <label class="setting-option">
+            <input type="checkbox" id="showNotifications" checked>
+            <span>Show Notifications</span>
+          </label>
+          <label class="setting-option">
+            <input type="checkbox" id="startMinimized">
+            <span>Start Minimized</span>
+          </label>
         </div>
-      </div>
-
-      <div class="shortcuts-panel">
-        <h2>Keyboard Shortcuts</h2>
-        <ul>
-          <li><strong>Command+Shift+G</strong> - Check Grammar</li>
-          <li><strong>Command+Shift+R</strong> - Rephrase Text</li>
-        </ul>
+        <button id="saveSettingsBtn" class="save-btn">Save Settings & Restart</button>
       </div>
 
       <div class="usage-instructions">
-        <h2>How to Use</h2>
+        <h3>How to Use</h3>
         <ol>
-          <li>Select text in any application</li>
-          <li>Press the shortcut for the operation you want</li>
-          <li>The selected text will be automatically replaced</li>
+          <li>Enable features you want to use</li>
+          <li>Click on shortcut buttons to customize (press keys to record)</li>
+          <li>Select text in any application and use shortcuts</li>
         </ol>
       </div>
     </main>
@@ -85,37 +128,6 @@
     <footer>
       <p>Grammar Ji - Your AI-powered writing assistant</p>
     </footer>
-  </div>
-
-  <!-- Settings Modal -->
-  <div id="settingsModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Settings</h2>
-      
-      <form id="settingsForm">
-        <h3>Application Settings</h3>
-        <p class="settings-note">Grammar Ji is free for everyone. No API key required!</p>
-
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="showNotifications" checked>
-            Show Notifications
-          </label>
-        </div>
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="startMinimized">
-            Start Minimized
-          </label>
-        </div>
-        
-        <div class="form-actions">
-          <button type="submit">Save Settings</button>
-          <button type="button" id="resetBtn">Reset to Defaults</button>
-        </div>
-      </form>
-    </div>
   </div>
 
   <!-- Stats Modal -->

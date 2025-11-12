@@ -6,7 +6,8 @@ contextBridge.exposeInMainWorld('api', {
   getSettings: () => ipcRenderer.invoke('get-settings'),
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
   resetSettings: () => ipcRenderer.invoke('reset-settings'),
-  
+  restartApp: () => ipcRenderer.invoke('restart-app'),
+
   // Event listeners
   onShowSettings: (callback) => {
     ipcRenderer.on('show-settings', () => callback());

@@ -31,14 +31,20 @@
     "files": [
       "src/**/*",
       "assets/**/*",
-      "package.json"
+      "package.json",
+      "node_modules/**/*"
     ],
+    "asar": true,
+    "nodeGypRebuild": false,
     "directories": {
       "buildResources": "assets"
     },
     "mac": {
       "category": "public.app-category.productivity",
-      "target": ["dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "icon": "assets/icon.icns",
       "darkModeSupport": true,
       "hardenedRuntime": true,
@@ -52,15 +58,21 @@
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "category": "public.app-category.productivity",
-      "provisioningProfile": "build/embedded.provisionprofile",
-      "type": "distribution"
+      "type": "distribution",
+      "identity": "48DE4C47696F4D13D0F643538B0ACF29C865934E"
     },
     "win": {
-      "target": ["nsis", "portable"],
+      "target": [
+        "nsis",
+        "portable"
+      ],
       "icon": "assets/icon.png"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility",
       "icon": "assets/icon.png"
     }
@@ -69,8 +81,9 @@
     "electron-store": "^8.1.0"
   },
   "devDependencies": {
+    "@electron/osx-sign": "^2.3.0",
     "electron": "^22.0.0",
-    "electron-builder": "^24.0.0",
+    "electron-builder": "^26.0.12",
     "sharp": "^0.34.1"
   }
-} 
+}

@@ -9,7 +9,9 @@
     "build": "electron-builder",
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
-    "build:linux": "electron-builder --linux"
+    "build:linux": "electron-builder --linux",
+    "dist:mas": "electron-builder --mac mas",
+    "dist:mas-dev": "electron-builder --mac mas-dev"
   },
   "keywords": [
     "electron",
@@ -38,7 +40,20 @@
       "category": "public.app-category.productivity",
       "target": ["dmg", "zip"],
       "icon": "assets/icon.icns",
-      "darkModeSupport": true
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "type": "distribution"
+    },
+    "mas": {
+      "hardenedRuntime": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "category": "public.app-category.productivity",
+      "provisioningProfile": "build/embedded.provisionprofile",
+      "type": "distribution"
     },
     "win": {
       "target": ["nsis", "portable"],

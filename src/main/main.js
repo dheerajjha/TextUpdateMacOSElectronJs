@@ -84,6 +84,19 @@ class MainProcess {
     });
   }
 
+  trackUsage(type, wordCount, responseTime, originalText, modifiedText) {
+    if (this.mainWindow && this.mainWindow.webContents) {
+      this.mainWindow.webContents.send('track-stats', {
+        type,
+        wordCount,
+        responseTime,
+        originalText,
+        modifiedText,
+        timestamp: Date.now()
+      });
+    }
+  }
+
   setupShortcuts() {
     const { features, shortcuts } = config.appSettings;
 
@@ -116,7 +129,7 @@ class MainProcess {
   async handleGrammarCheck() {
     try {
       this.showNotification('Grammar Check', 'Getting selected text...');
-      
+
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
         this.showNotification('Grammar Check', 'No text selected');
@@ -124,9 +137,16 @@ class MainProcess {
       }
 
       this.showNotification('Grammar Check', 'Checking grammar...');
+      const startTime = Date.now();
       const correctedText = await openaiService.checkGrammar(text);
+      const responseTime = Date.now() - startTime;
+
       await clipboardManager.replaceSelectedText(correctedText);
-      
+
+      // Track stats
+      const wordCount = text.trim().split(/\s+/).length;
+      this.trackUsage('grammar', wordCount, responseTime, text, correctedText);
+
       this.showNotification('Grammar Check', 'Text has been corrected');
     } catch (error) {
       console.error('Grammar check error:', error);
@@ -137,7 +157,7 @@ class MainProcess {
   async handleRephrase() {
     try {
       this.showNotification('Rephrase', 'Getting selected text...');
-      
+
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
         this.showNotification('Rephrase', 'No text selected');
@@ -145,9 +165,16 @@ class MainProcess {
       }
 
       this.showNotification('Rephrase', 'Rephrasing text...');
+      const startTime = Date.now();
       const rephrasedText = await openaiService.rephraseText(text);
+      const responseTime = Date.now() - startTime;
+
       await clipboardManager.replaceSelectedText(rephrasedText);
-      
+
+      // Track stats
+      const wordCount = text.trim().split(/\s+/).length;
+      this.trackUsage('rephrase', wordCount, responseTime, text, rephrasedText);
+
       this.showNotification('Rephrase', 'Text has been rephrased');
     } catch (error) {
       console.error('Rephrase error:', error);
@@ -158,7 +185,7 @@ class MainProcess {
   async handleSummarize() {
     try {
       this.showNotification('Summarize', 'Getting selected text...');
-      
+
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
         this.showNotification('Summarize', 'No text selected');
@@ -166,9 +193,16 @@ class MainProcess {
       }
 
       this.showNotification('Summarize', 'Summarizing text...');
+      const startTime = Date.now();
       const summarizedText = await openaiService.summarizeText(text);
+      const responseTime = Date.now() - startTime;
+
       await clipboardManager.replaceSelectedText(summarizedText);
-      
+
+      // Track stats
+      const wordCount = text.trim().split(/\s+/).length;
+      this.trackUsage('summarize', wordCount, responseTime, text, summarizedText);
+
       this.showNotification('Summarize', 'Text has been summarized');
     } catch (error) {
       console.error('Summarize error:', error);
@@ -179,7 +213,7 @@ class MainProcess {
   async handleTranslate() {
     try {
       this.showNotification('Translate', 'Getting selected text...');
-      
+
       const text = await clipboardManager.getSelectedText();
       if (!text.trim()) {
         this.showNotification('Translate', 'No text selected');
@@ -187,9 +221,16 @@ class MainProcess {
       }
 
       this.showNotification('Translate', 'Translating text...');
+      const startTime = Date.now();
       const translatedText = await openaiService.translateText(text);
+      const responseTime = Date.now() - startTime;
+
       await clipboardManager.replaceSelectedText(translatedText);
-      
+
+      // Track stats
+      const wordCount = text.trim().split(/\s+/).length;
+      this.trackUsage('translate', wordCount, responseTime, text, translatedText);
+
       this.showNotification('Translate', 'Text has been translated');
     } catch (error) {
       console.error('Translate error:', error);

@@ -51,8 +51,9 @@
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
-      "type": "distribution",
-      "minimumSystemVersion": "12.0"
+      "identity": "Ranju Jha (83C822A4J3)",
+      "minimumSystemVersion": "12.0",
+      "notarize": true
     },
     "mas": {
       "hardenedRuntime": false,

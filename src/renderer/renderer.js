@@ -340,16 +340,45 @@ function updateRecentActivityDisplay() {
   if (stats.recentActivity && stats.recentActivity.length > 0) {
     recentActivityList.innerHTML = stats.recentActivity
       .slice(0, 10)
-      .map(activity => `
-        <div class="activity-item">
-          <span class="activity-type">${activity.type}</span>
-          <span class="activity-time">${new Date(activity.timestamp).toLocaleString()}</span>
+      .map((activity, index) => {
+        const truncate = (text, maxLength = 100) => {
+          if (!text) return '';
+          return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        };
+
+        return `
+        <div class="activity-item" onclick="toggleActivityDetails(${index})">
+          <div class="activity-header">
+            <span class="activity-type">${activity.type}</span>
+            <span class="activity-time">${new Date(activity.timestamp).toLocaleString()}</span>
+          </div>
+          <div class="activity-details" id="activity-${index}" style="display: none;">
+            <div class="activity-text-section">
+              <strong>Original:</strong>
+              <p class="activity-text">${truncate(activity.originalText, 200)}</p>
+            </div>
+            <div class="activity-text-section">
+              <strong>Modified:</strong>
+              <p class="activity-text">${truncate(activity.modifiedText, 200)}</p>
+            </div>
+          </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
   } else {
     recentActivityList.innerHTML = '<p class="no-activity">No recent activity</p>';
   }
 }
+
+function toggleActivityDetails(index) {
+  const details = document.getElementById(`activity-${index}`);
+  if (details) {
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+// Make toggleActivityDetails available globally
+window.toggleActivityDetails = toggleActivityDetails;
 
 // Preview modal handlers (if needed)
 acceptChanges.addEventListener('click', () => {
@@ -367,3 +396,49 @@ rejectChanges.addEventListener('click', () => {
 // Initialize stats display
 updateStatsDisplay();
 updateRecentActivityDisplay();
+
+// Listen for stats tracking from main process
+window.api.onTrackStats((data) => {
+  console.log('Received stats update:', data);
+
+  // Update stats based on type
+  if (data.type === 'grammar') {
+    stats.grammarChecks = (stats.grammarChecks || 0) + 1;
+  } else if (data.type === 'rephrase') {
+    stats.rephrases = (stats.rephrases || 0) + 1;
+  } else if (data.type === 'summarize') {
+    stats.summarizations = (stats.summarizations || 0) + 1;
+  } else if (data.type === 'translate') {
+    stats.translations = (stats.translations || 0) + 1;
+  }
+
+  // Update word count and response times
+  stats.totalWords = (stats.totalWords || 0) + data.wordCount;
+  stats.responseTimes = stats.responseTimes || [];
+  stats.responseTimes.push(data.responseTime);
+
+  // Keep only last 100 response times
+  if (stats.responseTimes.length > 100) {
+    stats.responseTimes = stats.responseTimes.slice(-100);
+  }
+
+  // Add to recent activity
+  stats.recentActivity = stats.recentActivity || [];
+  stats.recentActivity.unshift({
+    type: data.type,
+    timestamp: data.timestamp,
+    wordCount: data.wordCount,
+    originalText: data.originalText,
+    modifiedText: data.modifiedText
+  });
+
+  // Keep only last 50 activities
+  if (stats.recentActivity.length > 50) {
+    stats.recentActivity = stats.recentActivity.slice(0, 50);
+  }
+
+  // Save to localStorage
+  localStorage.setItem('grammarJiStats', JSON.stringify(stats));
+
+  console.log('Stats updated:', stats);
+});

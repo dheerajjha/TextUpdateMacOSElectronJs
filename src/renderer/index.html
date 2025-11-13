@@ -43,6 +43,7 @@
             <td>
               <button class="shortcut-btn" data-feature="grammar" id="shortcutGrammar">
                 <span class="shortcut-display">⌘⇧G</span>
+                <span class="shortcut-hint">Click to record</span>
               </button>
             </td>
           </tr>
@@ -60,6 +61,7 @@
             <td>
               <button class="shortcut-btn" data-feature="rephrase" id="shortcutRephrase">
                 <span class="shortcut-display">⌘⇧R</span>
+                <span class="shortcut-hint">Click to record</span>
               </button>
             </td>
           </tr>
@@ -77,6 +79,7 @@
             <td>
               <button class="shortcut-btn" data-feature="summarize" id="shortcutSummarize">
                 <span class="shortcut-display">⌘⇧S</span>
+                <span class="shortcut-hint">Click to record</span>
               </button>
             </td>
           </tr>
@@ -94,11 +97,14 @@
             <td>
               <button class="shortcut-btn" data-feature="translate" id="shortcutTranslate">
                 <span class="shortcut-display">⌘⇧T</span>
+                <span class="shortcut-hint">Click to record</span>
               </button>
             </td>
           </tr>
         </tbody>
       </table>
+
+      <button id="saveSettingsBtn" class="primary-btn">Apply Changes</button>
 
       <div class="settings-row">
         <label class="setting-item">
@@ -110,8 +116,6 @@
           <span>Start Minimized</span>
         </label>
       </div>
-
-      <button id="saveSettingsBtn" class="primary-btn">Apply Changes</button>
     </main>
 
     <footer>
@@ -146,6 +150,8 @@
           <span class="stat-value" id="avgResponseTime">0ms</span>
         </div>
       </div>
+
+      <div id="recentActivityList" class="recent-activity"></div>
 
       <div class="stats-actions">
         <button id="clearStatsBtn" class="secondary-btn">Clear</button>

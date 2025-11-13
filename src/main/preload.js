@@ -12,5 +12,11 @@ contextBridge.exposeInMainWorld('api', {
   onShowSettings: (callback) => {
     ipcRenderer.on('show-settings', () => callback());
     return () => ipcRenderer.removeListener('show-settings', callback);
+  },
+
+  // Stats tracking
+  onTrackStats: (callback) => {
+    ipcRenderer.on('track-stats', (_, data) => callback(data));
+    return () => ipcRenderer.removeAllListeners('track-stats');
   }
 }); 
